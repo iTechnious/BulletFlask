@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Start</title>
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+        Hi {{ current_user.username }}!
+    {% else %}
+        <a href={{url_for("login")}}>Nicht eingeloggt!</a>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+{% extends "flash.html" %}
+{% block body %}
+    <form method="post">
+        {{ form.csrf_token }}
+        {{ form.username }}
+        {{ form.password }}
+        {{ form.submit }}
+    </form>
+{% endblock %}
+</html>
