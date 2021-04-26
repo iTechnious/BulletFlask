@@ -24,7 +24,7 @@ def init_db():
         db=conf.DB.db
     )
     with connection.cursor() as cursor:
-        cursor.execute('CREATE TABLE IF NOT EXISTS users ('
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS `{conf.Instance.user_instance}_users` ("
                        "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,"
                        "username VARCHAR(100),"
                        "email VARCHAR(100),"
@@ -33,8 +33,16 @@ def init_db():
                        "is_active TINYINT(1)"
                        ")")
 
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS `{conf.Instance.instance}_content` ("
+                       "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,"
+                       "name VARCHAR(255),"
+                       "location TEXT,"
+                       "type VARCHAR(50),"
+                       "permissions TEXT"
+                       ")")
+
         print()
-    connection.commit()
-    connection.close()
+        connection.commit()
+        connection.close()
 
     return True

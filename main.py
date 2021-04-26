@@ -1,16 +1,16 @@
-import flask
-from flask import Flask, request, render_template, redirect, url_for
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user, UserMixin
-from flask_sqlalchemy import SQLAlchemy
-from bcrypt import checkpw, hashpw, gensalt
 from urllib.parse import urlparse, urljoin
 
+from flask import Flask, request, render_template, redirect, url_for
+from flask_login import LoginManager, current_user, login_required, logout_user, UserMixin
+from flask_sqlalchemy import SQLAlchemy
+
+import api
 from statics import config, init
 from statics.forms import *
 
 init.init_db()
 
-app = Flask("FlaskBullet")
+app = Flask("BulletFlask")
 app.TEMPLATES_AUTO_RELOAD = True
 app.secret_key = config.secret_key
 app.config[
@@ -18,10 +18,11 @@ app.config[
                                  f"{config.DB.host}:{config.DB.port}/{config.DB.db}"
 
 db = SQLAlchemy()
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 class User(db.Model, UserMixin):
-    __tablename__ = "users"
+    __tablename__ = config.Instance.user_instance + "_users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     email = db.Column(db.String)
@@ -57,6 +58,10 @@ def is_safe_url(target):
 
 # -------------------- VIEWS ----------------------
 @app.route("/")
+def root():
+    return redirect(url_for("index"))
+
+@app.route("/home")
 def index():
     return render_template("index.html")
 
@@ -70,38 +75,8 @@ def dash():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        user = user_loader(form.username.data)
-        if user:
-            db_pass = "$2b$12$" + "".join(user.password.split("$").pop())
-            db_pass = db_pass.encode("utf-8")
-
-            # form_pass = hashpw(form.password.data.encode("utf-8"), salt)
-            form_pass = form.password.data
-            form_pass = form_pass.encode("utf-8")
-
-            if checkpw(form_pass, db_pass):
-                if login_user(user):
-                    user.is_authenticated = True
-                else:
-                    flask.flash("Es gab ein Problem beim Loginvorgang. Ist der Benutzer aktiv?")
-                    return redirect(url_for("login"))
-
-                db.session.add(user)
-                db.session.commit()
-
-                destination = flask.request.args.get('next')
-
-                if destination and is_safe_url(destination):
-                    return redirect(destination)
-                return redirect(url_for("index"))
-            else:
-                flask.flash("Das Passwort war falsch!")
-                return redirect(request.url)
-
-        else:
-            flask.flash("Benutzer wurde nicht gefunden!")
-            return redirect(request.url)
+    if form.is_submitted():
+        return api.login.process(form)
 
     if current_user.is_authenticated:
         return redirect(url_for("dash"))
@@ -116,31 +91,18 @@ def logout():
     db.session.add(user)
     db.session.commit()
     logout_user()
-    return redirect(flask.url_for("index"))
+    return redirect(url_for("index"))
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
 
-    if form.validate_on_submit():
-        if user_loader(form.username.data) is not None:
-            flask.flash("Benutzername schon vergeben!")
-            return redirect(request.url)
-        if user_loader(form.email.data) is not None:
-            flask.flash("E-Mail bereits registriert!")
-            return redirect(request.url)
-
-        salt = gensalt()
-        password = hashpw(bytes(form.password.data, "utf-8"), salt).decode("utf-8")
-        user = User(username=form.username.data, email=form.email.data, password=password, is_authenticated=True)
-        login_user(user)
-        db.session.add(user)
-        db.session.commit()
-
-        return redirect(url_for("index"))
+    if form.is_submitted():
+        return api.register.process(form)
 
     return render_template("register.html", form=form)
 
 
-app.run("127.0.0.1", 80)
+if __name__ == "__main__":
+    app.run("127.0.0.1", 80)

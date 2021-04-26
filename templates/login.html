@@ -6,11 +6,13 @@
 </head>
 {% extends "flash.html" %}
 {% block body %}
+<body>
     <form method="post">
         {{ form.csrf_token }}
         {{ form.username }}
         {{ form.password }}
         {{ form.submit }}
     </form>
+</body>
 {% endblock %}
 </html>
