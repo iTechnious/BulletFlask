@@ -30,7 +30,9 @@ def init_db():
                        "email VARCHAR(100),"
                        "password VARCHAR(255),"
                        "is_authenticated TINYINT(1),"
-                       "is_active TINYINT(1)"
+                       "is_active TINYINT(1),"
+                       "permissions TEXT,"
+                       "groups TEXT"
                        ")")
 
         cursor.execute(f"CREATE TABLE IF NOT EXISTS `{conf.Instance.instance}_content` ("

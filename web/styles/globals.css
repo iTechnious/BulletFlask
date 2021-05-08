@@ -1,0 +1,29 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  overflow-x: hidden;
+}
+
+.txt-input {
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background-color: #e9e9e9dc;
+}
+
+.txt-input:focus {
+  outline: 0;
+}
+
+button, input[type='submit'] {
+  padding: 10px;
+  background: #5d5d5ddc;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}

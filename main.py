@@ -1,15 +1,28 @@
 from urllib.parse import urlparse, urljoin
 import gettext
+import pymysql
 
 from flask import Flask, request, render_template, redirect, url_for
 from flask_login import LoginManager, current_user, login_required, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
 import api
+import api.content.create
 from statics import config, init
 from statics.forms import *
+from crossdomain import crossdomain
 
 init.init_db()
+
+mysql = pymysql.connect(
+    host=config.DB.host,
+    port=config.DB.port,
+    user=config.DB.user,
+    password=config.DB.password,
+    db=config.DB.db,
+    charset='utf8mb4',
+    cursorclass=pymysql.cursors.DictCursor
+)
 
 app = Flask("BulletFlask", static_folder='public')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -30,6 +43,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     is_authenticated = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
+    permissions = db.Column(db.Text, default="")
+    groups = db.Column(db.Text, default="")
 
     def get_id(self):
         return self.username
@@ -58,21 +73,25 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 # -------------------- VIEWS ----------------------
+@crossdomain(origin="*", current_app=app)
 @app.route("/")
 def root():
     return redirect(url_for("index"))
 
+@crossdomain(origin="*", current_app=app)
 @app.route("/home")
 def index():
     return render_template("index.html")
 
 
+@crossdomain(origin="*", current_app=app)
 @app.route("/dash")
 @login_required
 def dash():
     return "Dashboard"
 
 
+@crossdomain(origin="*", current_app=app)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -84,6 +103,7 @@ def login():
     return render_template("login.html", form=form)
 
 
+@crossdomain(origin="*", current_app=app)
 @app.route("/logout", methods=["GET"])
 @login_required
 def logout():
@@ -96,6 +116,7 @@ def logout():
 
 
 @app.route("/register", methods=["GET", "POST"])
+@crossdomain(origin="*", current_app=app)
 def register():
     form = RegisterForm()
 
@@ -103,6 +124,11 @@ def register():
         return api.register.process(form)
 
     return render_template("register.html", form=form)
+
+@crossdomain(origin="*", current_app=app)
+@app.route("/api/content/create")
+def create_content():
+    return api.content.create(current_user, request)
 
 
 @app.after_request
@@ -120,4 +146,4 @@ def add_header(r):
 
 
 if __name__ == "__main__":
-    app.run("127.0.0.1", 80)
+    app.run("127.0.0.1", config.port)

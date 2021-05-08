@@ -1,2 +1,6 @@
+node_modules/
+package-lock.json
+.next/
 statics/config.py
 .vs/
+__pycache__/
