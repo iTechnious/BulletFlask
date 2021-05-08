@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="/public/js/user.js"></script>
     <title>Login</title>
 </head>
 {% extends "flash.html" %}
 {% block body %}
+    <!--
     <form method="post">
         {{ form.csrf_token }}
         {{ form.username }}
@@ -13,5 +15,12 @@
         {{ form.password }}
         {{ form.submit }}
     </form>
+    -->
+    <form id="register-form">
+        <input type="text" name="username" id="username-entry">
+        <input type="email" name="email" id="email-entry">
+        <input type="password" name="password" id="password-entry">
+    </form>
+    <button onclick="register();">Registrieren</button>
 {% endblock %}
 </html>

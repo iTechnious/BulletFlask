@@ -1,4 +1,5 @@
 from urllib.parse import urlparse, urljoin
+import gettext
 
 from flask import Flask, request, render_template, redirect, url_for
 from flask_login import LoginManager, current_user, login_required, logout_user, UserMixin
@@ -10,8 +11,8 @@ from statics.forms import *
 
 init.init_db()
 
-app = Flask("BulletFlask")
-app.TEMPLATES_AUTO_RELOAD = True
+app = Flask("BulletFlask", static_folder='public')
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.secret_key = config.secret_key
 app.config[
     "SQLALCHEMY_DATABASE_URI"] = f"{config.DB.type}+{config.DB.driver}://{config.DB.user}:{config.DB.password}@" \
@@ -40,7 +41,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 login_manager.session_protection = "strong"
-login_manager.login_message = "Du bist nicht eingeloggt! Bitte gebe deine Logindaten ein. Dann wirst du zum Ziel weitergeleitet."
+#login_manager.login_message = "Du bist nicht eingeloggt! Bitte gebe deine Logindaten ein. Dann wirst du zum Ziel weitergeleitet."
 login_manager.login_message_category = "info"
 
 @login_manager.user_loader
@@ -74,12 +75,12 @@ def dash():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
     form = LoginForm()
     if form.is_submitted():
         return api.login.process(form)
 
-    if current_user.is_authenticated:
-        return redirect(url_for("dash"))
     return render_template("login.html", form=form)
 
 
@@ -102,6 +103,20 @@ def register():
         return api.register.process(form)
 
     return render_template("register.html", form=form)
+
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    Credit: https://stackoverflow.com/a/34067710
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 
 if __name__ == "__main__":

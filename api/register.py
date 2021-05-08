@@ -5,13 +5,10 @@ from bcrypt import hashpw, gensalt
 import main
 
 def process(form):
-    print(form.data)
     if main.user_loader(form.username.data) is not None:
-        flask.flash("Benutzername schon vergeben!")
-        return flask.redirect(flask.url_for("register"))
+        return "Benutzername schon vergeben!", 901
     if main.user_loader(form.email.data) is not None:
-        flask.flash("E-Mail bereits registriert!")
-        return flask.redirect(flask.url_for("register"))
+        return "E-Mail bereits registriert!", 902
 
     salt = gensalt()
     password = hashpw(bytes(form.password.data, "utf-8"), salt).decode("utf-8")
@@ -25,4 +22,4 @@ def process(form):
     main.db.session.add(user)
     main.db.session.commit()
 
-    return flask.redirect(flask.url_for("index"))
+    return "Erfolg", 200

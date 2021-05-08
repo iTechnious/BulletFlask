@@ -20,21 +20,14 @@ def process(form):
             if login_user(user):
                 user.is_authenticated = True
             else:
-                flask.flash("Es gab ein Problem beim Loginvorgang. Ist der Benutzer aktiv?")
-                return flask.redirect(flask.url_for("login"))
+                return "Es gab ein Problem beim Loginvorgang. Ist der Benutzer aktiv?", 903
 
             main.db.session.add(user)
             main.db.session.commit()
 
-            destination = flask.request.args.get('next')
-
-            if destination and is_safe_url(destination):
-                return flask.redirect(destination)
-            return flask.redirect(flask.url_for("index"))
+            return "success", 200
         else:
-            flask.flash("Das Passwort war falsch!")
-            return flask.redirect(flask.request.url)
+            return "Das Passwort war falsch!", 904
 
     else:
-        flask.flash("Benutzer wurde nicht gefunden!")
-        return flask.redirect(flask.request.url)
+        return "Benutzer wurde nicht gefunden!", 905
