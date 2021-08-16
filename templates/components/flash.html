@@ -1,0 +1,28 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <!--
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    -->
+    <script>
+      messages = [];
+      
+      {% for message in messages %}
+        messages.push("{{ message }}");
+      {% endfor %}
+
+      let toats_timer = setInterval(() => {
+        M.toast({html: messages[0]});
+
+        messages.shift();
+
+        if (messages.length == 0) {
+          clearInterval(toats_timer);
+        }
+      }, 300);
+    </script>
+  {% endif %}
+{% endwith %}

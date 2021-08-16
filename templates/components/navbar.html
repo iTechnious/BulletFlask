@@ -1,0 +1,94 @@
+<!-- NAVBAR ELEMENTS AND SCRIPTS -->
+
+<nav id="navbar">
+    <div class="nav-wrapper">
+        <div>
+            <a class="brand-logo" id="nav-logo" href="/">BulletFlask</a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        </div>
+
+        <ul id="nav-user" class="right">
+            {% if user.is_authenticated %}
+                <li><a href="/logout/">Hallo <span>{{ user.username }}</span>, Logout</a></li>
+            {% else %}
+                <li><a href="/login/">Nicht angemeldet, Login</a></li>
+            {% endif %}
+        </ul>
+        <ul id="nav" class="right hide-on-med-and-down">
+            <li><a href="/">Home</a></li>
+            <li><a href="/dash/">Dashboard</a></li>
+        </ul>
+
+        <div id="page-load" class="right preloader-wrapper big">
+            <div class="spinner-layer spinner-yellow-only">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div><div class="gap-patch">
+                <div class="circle"></div>
+            </div><div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<ul id="mobile-nav" class="sidenav sidenav-close">
+    <div id="sidenav-logo-wrapper" class="valign-wrapper">
+        <a href="/" class="brand-logo" id="sidenav-logo">Logo</a>
+    </div>
+</ul>
+
+<style>
+    span {
+        font-weight: bold;
+    }
+    .nav-wrapper {
+        min-height: 70px;
+        background-color: #0f166e;
+    }
+    .brand-logo {
+        margin-left: 10px;
+        color: #ffe70a !important;
+    }
+    #sidenav-logo {
+        font-size: xx-large;
+        margin: auto auto;
+    }
+    #sidenav-logo-wrapper {
+        min-height: 70px;
+        background-color: #0f166e;
+    }
+    #page-load {
+        margin-right: 10px;
+        color: #ffe70a;
+    }
+</style>
+
+<script src="/public/materialize/js/materialize.min.js"></script>
+<script src="/public/js/jquery-3.6.0.min.js"></script>
+
+<script> // Loads all nav links into the sidenav
+    let nav = document.getElementById("nav");
+    let mobilenav = nav.cloneNode(true);
+    mobilenav.id = "mobile-nav";
+    mobilenav.className = "";
+    document.getElementById("sidenav-logo-wrapper").after(mobilenav);
+
+    document.getElementById("sidenav-logo").innerHTML = document.getElementById("nav-logo").innerHTML;
+</script>
+
+<script> // Add loading animation to navbar
+    function load() {
+        document.getElementById("page-load").classList.add("active");
+    }
+    $(document).ready(function(){
+        $('.sidenav, #nav, #nav-user')
+        .sidenav()
+        .on('click tap', 'li a', () => {
+            load();
+        });
+    });
+</script>
+
+<!-- END NAVBAR ELEMENTS AND SCRIPTS -->

@@ -2,27 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="/public/js/user.js"></script>
+    <link rel="stylesheet" href="/public/materialize/css/materialize.min.css">
+    <link rel="stylesheet" href="/public/css/common.css">
+    <link rel="stylesheet" href="/public/css/login.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <title>Login</title>
 </head>
-{% extends "flash.html" %}
-{% block body %}
 <body>
-    <!--
-    <form method="post">
-        {{ form.csrf_token }}
-        {{ form.username }}
-        {{ form.password }}
-        {{ form.submit }}
-    </form>
-    -->
+    {% include "components/navbar.html" %}
 
-    <form id="login-form">
-        <input type="text" name="username" id="username-entry">
-        <input type="password" name="password" id="password-entry">
-    </form>
-    <button onclick="login();">Anmelden</button>
+    {% include "components/modals/login.html" %}
+    
+    {% include "components/flash.html" %}
+    {% include "components/script.html" %}
 
+    <script src="/public/js/user.js"></script>
 </body>
-{% endblock %}
 </html>

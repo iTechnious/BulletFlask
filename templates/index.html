@@ -2,14 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/public/materialize/css/materialize.min.css">
+    <link rel="stylesheet" href="/public/css/common.css">
+    <link rel="stylesheet" href="/public/css/login.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <title>Start</title>
 </head>
 <body>
+    {% include "components/navbar.html" %}
+
     {% if current_user.is_authenticated %}
-        Hi {{ current_user.username }}!
-        <a href={{url_for("logout")}}>Logout</a>
+        <p>Hi {{ current_user.username }}!</p>    
+        <a href={{ url_for("user.logout") }}>Logout</a>
     {% else %}
-        <a href={{url_for("login")}}>Nicht eingeloggt!</a>
+        <a href={{ url_for("user.login") }}>Nicht eingeloggt!</a>
     {% endif %}
+
+    {% include "components/script.html" %}
 </body>
 </html>

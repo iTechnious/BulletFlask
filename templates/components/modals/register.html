@@ -1,0 +1,27 @@
+<div id="register" class="center-align">
+    <h4>Neues Konto erstellen</h4>
+    <form id="register-form">
+        <div class="input-field col s6">
+            <i class="material-icons prefix">account_circle</i>
+            <input id="username-entry" type="text" class="validate" name="username">
+            <label for="username-entry">Benutzername</label>
+        </div>
+
+        <div class="input-field col s6">
+            <i class="material-icons prefix">mail</i>
+            <input type="email" name="email" id="email-entry">
+            <label for="email-entry">E-Mail</label>
+        </div>
+
+        <div class="input-field col s6">
+            <i class="material-icons prefix">lock</i>
+            <input id="password-entry" type="password" class="validate" name="password">
+            <label for="password-entry">Passwort</label>
+        </div>
+    </form>
+    <a class="waves-effect waves-light btn" onclick="register();"><i class="material-icons left">fiber_new</i>Registrieren</a>    
+
+    <div id="login-button" class="right-align">
+        <a href="/login/" class="waves-effect waves-light btn"><i class="material-icons left">verified_user</i>Einloggen</a>  
+    </div>
+</div>

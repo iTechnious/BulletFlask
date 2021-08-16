@@ -1,4 +1,5 @@
 secret_key = ""
+port = 80
 
 class DB:
     type = "mysql"
@@ -8,3 +9,7 @@ class DB:
     user = "BulletFlask"
     password = ""
     db = "BulletFlask"
+
+class Instance:
+    instance = "1"
+    user_instance = "1"

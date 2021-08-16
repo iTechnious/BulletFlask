@@ -1,0 +1,25 @@
+body {
+    width: 100vw;
+}
+
+#login, #register {
+    margin: auto auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.150);
+    width: 80%;
+    max-width: 400px;
+}
+#login h4, #register h4 {
+    margin-bottom: 30px;
+}
+
+.input-field {
+    margin: auto auto;
+    margin-top: 20px;
+    max-width: 80%;
+}
+#register-button, #login-button {
+    margin-top: 30px;
+    margin-right: 10px;
+}

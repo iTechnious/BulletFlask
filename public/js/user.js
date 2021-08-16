@@ -1,4 +1,8 @@
 function login() {
+    document.getElementById("load").classList.add("active");
+    let button = document.getElementById("login-button");
+    button.classList.add("disabled");
+
     var formElement = document.getElementById("login-form");
     
     req = new XMLHttpRequest();
@@ -11,6 +15,8 @@ function login() {
                 window.location.replace("/");
             } else {
                 alert(req.response + " - " + String(req.status));
+                document.getElementById("load").classList.remove("active");
+                button.classList.remove("disabled");
             }
         }
     }
@@ -20,6 +26,10 @@ function login() {
 }
 
 function register() {
+    document.getElementById("load").classList.add("active");
+    let button = document.getElementById("login-button");
+    button.classList.add("disabled");
+
     var formElement = document.getElementById("register-form");
     
     req = new XMLHttpRequest();
@@ -32,6 +42,8 @@ function register() {
                 window.location.replace("/");
             } else {
                 alert(req.response + " - " + String(req.status));
+                document.getElementById("load").classList.remove("active");
+                button.classList.remove("disabled");
             }
         }
     }

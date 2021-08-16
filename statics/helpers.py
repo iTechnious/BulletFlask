@@ -1,24 +1,37 @@
 import json
-from main import mysql
+from globals import mysql
+from statics import config
 
 def permissions_checker(user, group, action, location):
-    permissions = json.loads(user["permissions"])
+    permissions = json.loads(user.permissions)
 
-    if cursor.execute(f"SELECT * FROM {config.Instance.user_instance}_content WHERE location={location}") == 0:
-        return "Location not found.", 404
+    with mysql.cursor() as cursor:
+        if cursor.execute(f"SELECT * FROM `{config.Instance.user_instance}_content` WHERE `location`='{location}'") == 0:
+            return "Location not found.", 404
 
-    parent_location = location.split("/")
-    cursor.execute(f'SELECT * FROM {config.Instance.user_instance}_content WHERE location={"".join(parent[:-1])} AND name={parent[-1]}')
-    parent = cursor.fetchone()
+        cursor.execute(f'SELECT * FROM {config.Instance.user_instance}_content WHERE `path`="{location}"')
+        parent = cursor.fetchone()
 
-    if parent["permissions"][user.email][group][action] == True:
-        return True
+        if parent is not None:
+            parent_permissions = json.loads(parent["permissions"])
 
-    for user_group in user.groups:
-        if parent[permissions][user_group][group][action] == True:
-            return True
+            try:
+                if parent is not None and parent_permissions[user.email][group][action]:
+                    return True
+            except KeyError:
+                pass
 
-    if permissions[group][action] == True:
-        return True
-        
-    return False
+            for user_group in user.groups:
+                try:
+                    if parent is not None and parent_permissions[user_group][group][action]:
+                        return True
+                except KeyError:
+                    pass
+
+        try:
+            if permissions[group][action]:
+                return True
+        except KeyError:
+            pass
+
+        return False

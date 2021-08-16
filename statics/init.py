@@ -31,16 +31,17 @@ def init_db():
                        "password VARCHAR(255),"
                        "is_authenticated TINYINT(1),"
                        "is_active TINYINT(1),"
-                       "permissions TEXT,"
-                       "groups TEXT"
+                       "permissions TEXT DEFAULT '{}',"
+                       "groups TEXT DEFAULT '{}'"
                        ")")
 
         cursor.execute(f"CREATE TABLE IF NOT EXISTS `{conf.Instance.instance}_content` ("
                        "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,"
                        "name VARCHAR(255),"
                        "location TEXT,"
+                       "path TEXT,"
                        "type VARCHAR(50),"
-                       "permissions TEXT"
+                       "permissions TEXT DEFAULT '{}'"
                        ")")
 
         print()

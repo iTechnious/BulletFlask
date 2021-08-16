@@ -1,13 +1,10 @@
-from bcrypt import checkpw, hashpw, gensalt
-import flask
+from bcrypt import checkpw
 from flask_login import login_user
 
-from main import is_safe_url
-
-import main
+from routes.user import db, user_loader
 
 def process(form):
-    user = main.user_loader(form.username.data)
+    user = user_loader(form.username.data)
     if user:
         db_pass = "$2b$12$" + "".join(user.password.split("$").pop())
         db_pass = db_pass.encode("utf-8")
@@ -22,8 +19,8 @@ def process(form):
             else:
                 return "Es gab ein Problem beim Loginvorgang. Ist der Benutzer aktiv?", 903
 
-            main.db.session.add(user)
-            main.db.session.commit()
+            db.session.add(user)
+            db.session.commit()
 
             return "success", 200
         else:

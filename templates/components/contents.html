@@ -1,0 +1,7 @@
+{% for element in contents %}
+{% if element.type in ["category"] %}
+<div class="element">
+    <button onclick="location_change('{{ element.path }}')">{{element.name}}</button>
+</div>
+{% endif %}
+{% endfor %}

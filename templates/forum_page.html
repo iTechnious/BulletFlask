@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Forum</title>
+</head>
+<body>
+    <div id="forum-contents"></div>
+</body>
+<script>
+    function location_change(location, back=false) {
+        console.log(location);
+        if(location == null) { location = "/"; }
+        if(!back) { window.history.pushState(location, "", location); console.log("added " + location); }
+        fetch("/api/content/get?location=" + location + "&html")
+        .then(
+            response => response.text()
+                .then(res => document.getElementById("forum-contents").innerHTML = res)
+        ); 
+    }
+
+    window.onpopstate = () => {
+        location_change(window.history.state, back=true);
+    }
+
+    location_change(window.location.pathname, back=true);  
+</script>
+</html>
