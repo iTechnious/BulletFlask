@@ -7,6 +7,7 @@ app = Flask("BulletFlask", static_folder='public')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.secret_key = config.secret_key
 
+pymysql.threadsafety = 3
 
 mysql = pymysql.connect(
     host=config.DB.host,

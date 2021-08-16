@@ -1,7 +1,7 @@
 {% for element in contents %}
 {% if element.type in ["category"] %}
-<div class="element">
-    <button onclick="location_change('{{ element.path }}')">{{element.name}}</button>
+<div class="element" onclick="location_change('/forum{{ element.path }}')">
+    <div>{{element.name}}</div>
 </div>
 {% endif %}
 {% endfor %}

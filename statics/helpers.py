@@ -9,7 +9,11 @@ def permissions_checker(user, group, action, location):
         if cursor.execute(f"SELECT * FROM `{config.Instance.user_instance}_content` WHERE `location`='{location}'") == 0:
             return "Location not found.", 404
 
-        cursor.execute(f'SELECT * FROM {config.Instance.user_instance}_content WHERE `path`="{location}"')
+        if location != "/":
+            cursor.execute(f'SELECT * FROM {config.Instance.user_instance}_content WHERE `path`="{location}"')
+        else:
+            cursor.execute(f'SELECT * FROM {config.Instance.user_instance}_content WHERE `location`="{location}"')
+
         parent = cursor.fetchone()
 
         if parent is not None:

@@ -10,6 +10,9 @@ def process(current_user, request):
         if not location.endswith("/"):
             location = location + "/"
 
+        if cursor.execute(f"SELECT * FROM {config.Instance.instance}_content WHERE `path`='{location}'") == 0 and location != "/":
+            return False
+
         if not permissions_checker(current_user, "view", "all", location):
             return "No permission to view this location", 906
 

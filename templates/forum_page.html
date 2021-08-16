@@ -2,21 +2,66 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/public/materialize/css/materialize.min.css">
+    <link rel="stylesheet" href="/public/css/common.css">
+    <link rel="stylesheet" href="/public/css/forum.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <title>Forum</title>
 </head>
 <body>
-    <div id="forum-contents"></div>
+    {% include "components/navbar.html" %}
+
+    <nav id="breadcrumb">
+        <div class="nav-wrapper">
+            <div class="col s12">
+            <a id="start-link" onclick="location_change('/forum/')" class="breadcrumb">Forum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="forum-contents" class="center-align"></div>
 </body>
 <script>
     function location_change(location, back=false) {
+        let loader = setTimeout(() => {  //delay to prevent loader from flashing
+            document.getElementById("page-load").classList.add("active");},
+        100);
+
+        //location = location.slice(6)
         console.log(location);
         if(location == null) { location = "/"; }
         if(!back) { window.history.pushState(location, "", location); console.log("added " + location); }
-        fetch("/api/content/get?location=" + location + "&html")
+
+        fetch("/api/content/get/?html&location=" + location.slice(6))
         .then(
             response => response.text()
                 .then(res => document.getElementById("forum-contents").innerHTML = res)
-        ); 
+                .then(clearTimeout(loader)) //prevents animation to play if this is done too early
+                .then(document.getElementById("page-load").classList.remove("active"))
+        );
+
+        path = location.slice(6).split("/").filter((ele) => {return ele != ""})
+
+        console.log(path);
+
+        document.querySelectorAll('.auto-breadcrumb').forEach(e => e.remove());
+
+        let location_data;
+        fetch("/api/content/get_data/?location=" + location.slice(6))
+            .then( response => response.json().then(res => location_data = res) )
+            .then(() => {
+                for (let i = 0; i < path.length; i++) {
+                    console.log(i);
+                    link = document.getElementById("start-link").cloneNode();
+                    href = "/" + path.slice(0, path.length - i).join("/") + "/";
+                    console.log(href);
+                    link.setAttribute('onclick', 'location_change("/forum'+href+'")');
+                    link.innerHTML = location_data[i]["name"];
+                    link.classList.add("auto-breadcrumb");
+                    document.getElementById("start-link").after(link);
+                }
+            });
     }
 
     window.onpopstate = () => {
@@ -25,4 +70,7 @@
 
     location_change(window.location.pathname, back=true);  
 </script>
+
+{% include "components/script.html" %}
+
 </html>

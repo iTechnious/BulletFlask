@@ -1,0 +1,29 @@
+#forum-contents {
+    width: fit-content;
+    margin: auto auto;
+}
+
+.element {
+    display: inline-block;
+    min-height: 100px;
+    min-width: 200px;
+    background-color: blue;
+
+    cursor: pointer;
+
+    margin: 10px;
+
+    border-radius: 5px;
+}
+#breadcrumb {
+    background-color: #0f166e;
+    height: 70px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+#breadcrumb .nav-wrapper {
+    height: 70px !important;
+}
+#breadcrumb div div a {
+    cursor: pointer;
+}
