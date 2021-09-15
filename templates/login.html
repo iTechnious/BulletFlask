@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/public/materialize/css/materialize.min.css">
+    <link rel="stylesheet" href="/public/materialize/css/materialize.css">
     <link rel="stylesheet" href="/public/css/common.css">
     <link rel="stylesheet" href="/public/css/login.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -10,6 +10,12 @@
     <title>Login</title>
 </head>
 <body>
+    <ul id="mobile-nav" class="sidenav sidenav-close">
+        <div id="sidenav-logo-wrapper" class="valign-wrapper">
+            <a href="/" class="brand-logo" id="sidenav-logo">Logo</a>
+        </div>
+    </ul>
+    
     {% include "components/navbar.html" %}
 
     {% include "components/modals/login.html" %}

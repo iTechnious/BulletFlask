@@ -1,7 +1,34 @@
-{% for element in contents %}
-{% if element.type in ["category"] %}
-<div class="element" onclick="location_change('/forum{{ element.path }}')">
-    <div>{{element.name}}</div>
+{% if current["content"] != None %}
+    <!-- 
+<p style="font-size: 10px;">Gerendert mit <a href="https://zerodevx.github.io/zero-md/">zero-md</a>.</p>
+    <br>
+    <zero-md>
+        <script type="text/markdown">
+        </script>
+    </zero-md>
+    -->
+    
+<div id="thread-contents" class="left-align">
+    {{ current["content"] }}
 </div>
 {% endif %}
-{% endfor %}
+
+<div id="threads">
+    {% for element in contents %}
+    {% if element.type in ["thread"] %}
+    <div class="thread" onclick="location_change('/forum{{ element.location + element.id|string }}/')">
+        <div>{{element.name}}</div>
+    </div>
+    {% endif %}
+    {% endfor %}    
+</div>
+
+<div id="categories">
+    {% for element in contents %}
+    {% if element.type in ["category"] %}
+    <div class="category" onclick="location_change('/forum{{ element.location + element.id|string }}/')">
+        <div>{{element.name}}</div>
+    </div>
+    {% endif %}
+    {% endfor %}    
+</div>

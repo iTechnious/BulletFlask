@@ -1,9 +1,37 @@
-#forum-contents {
-    width: fit-content;
+#nav-wrapper {
+    height: 100%;
+}
+#forum-nav {
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    overflow-x: hidden;
+    height: 100%;
+}
+#page {
+    overflow: hidden;
+    height: fit-content;
+    width: 95vw;
+    top: auto;
     margin: auto auto;
+    margin-top: 20px;
+    margin-bottom: 100px;
+
+    overflow-x: hidden;
+}
+#forum-contents {
+    width: 98%;
+    max-width: 1000px;
+    margin: auto auto;
+
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.element {
+.category {
+    font-size: xx-large;
+    color: white;
+
     display: inline-block;
     min-height: 100px;
     min-width: 200px;
@@ -15,15 +43,78 @@
 
     border-radius: 5px;
 }
-#breadcrumb {
-    background-color: #0f166e;
-    height: 70px;
-    padding-left: 18px;
-    padding-right: 18px;
+.thread {
+    font-size: xx-large;
+    color: white;
+
+    display: inline-block;
+    min-height: 50px;
+    height: fit-content;
+
+    width: 98%;
+    max-width: 1000px;
+    background-color: blue;
+
+    cursor: pointer;
+
+    margin: 10px;
+
+    border-radius: 5px;
 }
-#breadcrumb .nav-wrapper {
-    height: 70px !important;
+#thread-contents {
+    font-size: large;
+}
+#thread-contents h1 {
+    font-size: xx-large;
+    font-weight: bold;
+}
+#thread-contents h2 {
+    font-size: xx-large;
+}
+#thread-contents h3 {
+    font-size: x-large;
+}
+#breadcrumb {
+    margin-top: 0;
+
+    background-color: #0f166e;
+
+    min-height: 70px !important;
+    height: fit-content !important;
+    max-height: 50vh !important;
+    max-width: 100%;
+
+    padding-left: 18px;
+    padding-right: 0px;
 }
 #breadcrumb div div a {
     cursor: pointer;
+}
+
+.input-field textarea {
+    min-height: 100px;
+}
+
+#add-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+}
+
+code {
+    display: block;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    border-radius: 10px;
+
+    max-width: 100%;
+
+    overflow-x: scroll;
+
+    color: #bccddf;
+    background: #2B2B2B;
 }

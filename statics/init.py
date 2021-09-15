@@ -41,7 +41,8 @@ def init_db():
                        "location TEXT,"
                        "path TEXT,"
                        "type VARCHAR(50),"
-                       "permissions TEXT DEFAULT '{}'"
+                       "permissions TEXT DEFAULT '{}',"
+                       "content TEXT"
                        ")")
 
         print()
