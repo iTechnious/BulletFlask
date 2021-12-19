@@ -10,7 +10,6 @@ function login() {
     //check login response
     req.onreadystatechange = () => {
         if (req.readyState === 4) {
-            console.log(req.response, req.status);
             if (req.status == 200) {
                 var qd = {};
                 if (location.search) location.search.substr(1).split`&`.forEach(item => {let [k,v] = item.split`=`; v = v && decodeURIComponent(v); (qd[k] = qd[k] || []).push(v)})
@@ -41,7 +40,6 @@ function register() {
     //check login response
     req.onreadystatechange = () => {
         if (req.readyState === 4) {
-            console.log(req.response, req.status);
             if (req.status == 200) {
                 window.location.replace("/");
             } else {

@@ -1,17 +1,17 @@
 <div id="create-topic-modal" class="modal">
     <div class="modal-content">
         <div class="row">
-            <div class="col s12">
+            <div id="create-tabs" class="col s12">
                 <ul class="tabs">
-                    <li class="tab col s3"><a class="active" href="#create-thread">Thread</a></li>
-                    <li class="tab col s3"><a href="#create-category">Kategorie</a></li>
+                    <li class="tab col s3"><a class="" href="#create-thread">Thread</a></li>
+                    <li class="tab col s3"><a class="" href="#create-category">Kategorie</a></li>
                 </ul>
             </div>
             <div id="create-thread">
-                <h4>Thread erstellen</h4>
+                <h4 class="m-padding">Thread erstellen</h4>
                 <form action="/api/content/create/" method="POST">
                     <input type="hidden" name="type" value="thread">
-                    <input type="hidden" name="location" value="" id="create-location">
+                    <input type="hidden" name="location" value="" class="location-autoupdate" id="create-location">
         
                     <div class="input-field col s12">
                         <input type="text" name="name" id="thread-title" class="input-field">
@@ -25,8 +25,8 @@
                         <-- Diese Funktion benutzt <a href="http://stackedit.io" target="_blank">"StackEdit"</a>. 
                     </div>
         
-                    <div class="row">
-                        <button class="btn waves-effect waves-light" onclick="create_thread()">
+                    <div class="row m-padding">
+                        <button class="btn waves-effect waves-light create-buttons" onclick="create_thread()">
                             Thread erstellen
                             <i class="material-icons right">add</i>
                         </button>
@@ -34,18 +34,18 @@
                 </form>
             </div>
             <div id="create-category">
-                <h4>Kategorie erstellen</h4>
+                <h4 class="m-padding">Kategorie erstellen</h4>
                 <form action="/api/content/create/" method="POST">
                     <input type="hidden" name="type" value="category">
-                    <input type="hidden" name="location" value="" id="create-location">
+                    <input type="hidden" name="location" value="" class="location-autoupdate" id="create-location">
         
                     <div class="input-field col s12">
                         <input type="text" name="name" id="thread-title" class="input-field">
                         <label for="category-title">Titel</label>
                     </div>
         
-                    <div class="row">
-                        <button class="btn waves-effect waves-light" onclick="create_thread()">
+                    <div class="row m-padding">
+                        <button class="btn waves-effect waves-light create-buttons" onclick="create_thread()">
                             Kategorie erstellen
                             <i class="material-icons right">add</i>
                         </button>
@@ -79,5 +79,9 @@
     // Listen to StackEdit events and apply the changes to the textarea.
     stackedit.on('fileChange', (file) => {
         el.value = file.content.text;
+    });
+
+    $(document).ready(() => {
+        $('.tabs').tabs();
     });
 </script>

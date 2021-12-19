@@ -22,14 +22,25 @@
         <nav id="breadcrumb">
             <div class="nav-wrapper">
                 <div class="col s12">
-                <a id="start-link" onclick="location_change('/forum/')" class="breadcrumb">Forum</a>
+                    <a id="start-link" onclick="location_change('0')" class="breadcrumb">Forum</a>
                 </div>
             </div>
         </nav>
     </div>
 
     <div id="page">
-        <button id="add-button" data-target="create-topic-modal" class="btn modal-trigger"><i class="material-icons left">add</i>erstellen</button>
+        <button id="add-button" data-target="create-topic-modal" class="btn-floating btn-large modal-trigger"><i class="material-icons left">add</i></button>
+        
+        <div id="mod-button" class="fixed-action-btn">
+            <a class="btn-floating btn-large">
+                <i class="large material-icons">build</i>
+            </a>
+            <ul>
+                <li><a class="btn-floating red"><i class="material-icons">delete</i></a></li>
+                <li><a class="btn-floating orange"><i class="material-icons">lock</i></a></li>
+                <li><a class="btn-floating blue"><i class="material-icons">mode_edit</i></a></li>
+            </ul>
+        </div>
 
         <div id="forum-contents" class="center-align"></div>    
     </div>
@@ -37,7 +48,9 @@
     {% include "components/modals/create.html" %}
 </body>
 
-<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+<link rel="stylesheet" href="/public/css/code_styles/github-dark.min.css">
+<script src="/public/js/highlight.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
 <script src="/public/js/forum_page.js"></script>
 <script>

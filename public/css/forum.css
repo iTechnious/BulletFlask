@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
 #nav-wrapper {
     height: 100%;
 }
@@ -18,14 +20,21 @@
     margin-bottom: 100px;
 
     overflow-x: hidden;
+
+    font-family: 'Open Sans', sans-serif;
 }
 #forum-contents {
     width: 98%;
-    max-width: 1000px;
+    max-width: 1100px;
     margin: auto auto;
 
     margin-top: 20px;
     margin-bottom: 20px;
+
+    padding: 1px 50px 20px 50px;
+    border-radius: 10px;
+    background-color: #081c35d5;
+    color: white;
 }
 
 .category {
@@ -35,7 +44,7 @@
     display: inline-block;
     min-height: 100px;
     min-width: 200px;
-    background-color: blue;
+    background-color: #0f166e;
 
     cursor: pointer;
 
@@ -44,8 +53,11 @@
     border-radius: 5px;
 }
 .thread {
-    font-size: xx-large;
+    font-size: x-large;
     color: white;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
 
     display: inline-block;
     min-height: 50px;
@@ -53,13 +65,16 @@
 
     width: 98%;
     max-width: 1000px;
-    background-color: blue;
+    background-color: #0f166e;
 
     cursor: pointer;
 
     margin: 10px;
 
     border-radius: 5px;
+}
+#forum-contents h1 {
+    font-size: 250%;
 }
 #thread-contents {
     font-size: large;
@@ -73,6 +88,12 @@
 }
 #thread-contents h3 {
     font-size: x-large;
+}
+#thread-contents ul {
+    list-style-type: circle !important;
+}
+#thread-contents pre code {
+    font-family: 'Courier New', Courier, monospace;
 }
 #breadcrumb {
     margin-top: 0;
@@ -100,21 +121,55 @@
     bottom: 30px;
     right: 30px;
 }
+#mod-button {
+    width: fit-content;
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+}
+#mod-button ul {
+    width: fit-content !important;
+    bottom: 100px;
+    left: 0;
+}
 
 code {
+    display: inline;
+
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+
+    border-radius: 4px;
+
+    overflow-x: auto;
+    
+    color: #bccddf;
+    background: #2B2B2B;
+
+    font-size: 15px;
+    font-family: monospace;
+}
+
+pre code {
     display: block;
+
+    border-radius: 10px;
 
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 10px;
     padding-right: 10px;
+}
 
-    border-radius: 10px;
-
-    max-width: 100%;
-
-    overflow-x: scroll;
-
-    color: #bccddf;
-    background: #2B2B2B;
+.m-padding {
+    padding-left: 10.5px;
+    padding-right: 10.5px;
+}
+#create-tabs {
+    margin-bottom: 40px;
+}
+.create-buttons {
+    margin-top: 40px;
 }

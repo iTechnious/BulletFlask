@@ -27,6 +27,10 @@ def get_content():
         # print("building page for ", request.args["location"])
         contents = [contents[key] for key in contents.keys()]
 
+        print()
+        print()
+        print(current)
+
         return render_template("components/contents.html", contents=contents, current=current)
 
     return contents
@@ -36,7 +40,7 @@ def get_content():
 @api_get.route("/api/content/get_data/")
 @login_required
 def get_data():
-    location = request.args["location"].split("/")[1:-1]
+    location = request.args["location"]
 
     # NEEDS PERMISSION SYSTEM!
 
@@ -44,18 +48,23 @@ def get_data():
         if "breadcrumb" in request.args:
             data = []
 
-            while location != []:  # do NOT change to if not location!
-                l = '/'+'/'.join(location)+'/'
-                cursor.execute(f"SELECT id, name, location FROM {config.Instance.instance}_content WHERE `id`='{location[-1]}'")
-                data.append(cursor.fetchone())
-                location.pop(len(location)-1)
+            cursor.execute(f"SELECT id, name, location FROM {config.Instance.instance}_content WHERE `id`='{location}'")
+            res = cursor.fetchone()
+            data.append(res)
+            while res["id"] != 0:
+                cursor.execute(f"SELECT id, name, location FROM {config.Instance.instance}_content WHERE `id`='{res['location']}'")
+                res = cursor.fetchone()
+                data.append(res)
+                print(data)
 
             if None in data:
                 data.remove(None)
 
+            data = [element for element in data if element["id"] != 0]  # Filter out root entry, which is already in the page
+
             print("Breadcrumb:", data)
         else:
-            cursor.execute(f"SELECT * FROM {config.Instance.instance}_content WHERE `id`='{location[-1]}'")
+            cursor.execute(f"SELECT * FROM {config.Instance.instance}_content WHERE `id`='{location}'")
             data = cursor.fetchone()
 
         con.close()

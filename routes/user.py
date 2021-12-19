@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
     is_authenticated = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
     permissions = db.Column(db.Text, default="{}")
-    groups = db.Column(db.Text, default="{}")
+    groups = db.Column(db.Text, default="[]")
 
     def get_id(self):
         return self.username

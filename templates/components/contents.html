@@ -1,24 +1,25 @@
-{% if current["content"] != None %}
-    <!-- 
-<p style="font-size: 10px;">Gerendert mit <a href="https://zerodevx.github.io/zero-md/">zero-md</a>.</p>
-    <br>
-    <zero-md>
-        <script type="text/markdown">
-        </script>
-    </zero-md>
-    -->
-    
-<div id="thread-contents" class="left-align">
-    {{ current["content"] }}
-</div>
+{% if current != None and current["type"] == "category" %}
+    <h4 id="category-name">{{ current["name"] }}</h4>
+    <hr>
+{% endif%}
+{% if current != None and current["content"] != None %}
+    <h1 style="margin-bottom: 20px;">Thread - "{{ current["name"] }}"</h1>
+    <hr style="margin-bottom: 10px;">
+    <div id="thread-contents" class="left-align">
+        {{ current["content"] }}
+    </div>
+{% endif %}
+
+{% if contents|length == 0 and current["content"] == None %}
+    <h3>Hier gibt es noch nichts zu sehen...</h3>
 {% endif %}
 
 <div id="threads">
     {% for element in contents %}
     {% if element.type in ["thread"] %}
-    <div class="thread" onclick="location_change('/forum{{ element.location + element.id|string }}/')">
-        <div>{{element.name}}</div>
-    </div>
+        <div class="thread" onclick="location_change('{{ element.id|string }}')">
+            <p>{{element.name}}</p>
+        </div>
     {% endif %}
     {% endfor %}    
 </div>
@@ -26,9 +27,9 @@
 <div id="categories">
     {% for element in contents %}
     {% if element.type in ["category"] %}
-    <div class="category" onclick="location_change('/forum{{ element.location + element.id|string }}/')">
-        <div>{{element.name}}</div>
-    </div>
+        <div class="category" onclick="location_change('{{ element.id|string }}')">
+            <p>{{element.name}}</p>
+        </div>
     {% endif %}
     {% endfor %}    
 </div>

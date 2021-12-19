@@ -3,7 +3,7 @@
 <nav id="navbar">
     <div class="nav-wrapper">
         <div>
-            <a class="brand-logo" id="nav-logo" href="/">BulletFlask</a>
+            <a class="brand-logo left" id="nav-logo" href="/">BulletFlask</a>
             <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
 
@@ -20,7 +20,7 @@
             <li><a href="/forum/">Forum</a></li>
         </ul>
 
-        <div id="page-load" class="right preloader-wrapper big">
+        <div id="page-load" class="right preloader-wrapper big active">
             <div class="spinner-layer">
             <div class="circle-clipper left">
                 <div class="circle"></div>
@@ -30,6 +30,10 @@
                 <div class="circle"></div>
             </div>
             </div>
+        </div>
+
+        <div id="page-warn" class="right hide">
+            <i class="material-icons">perm_scan_wifi</i>
         </div>
     </div>
 </nav>

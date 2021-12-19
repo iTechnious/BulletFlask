@@ -8,6 +8,7 @@ from crossdomain import crossdomain
 from globals import app
 from routes import user
 from routes.api_get import api_get
+from routes.permissions import api_permissions
 from statics import config, init
 
 app.testing = True
@@ -16,6 +17,7 @@ init.init_db()
 
 app.register_blueprint(user.user_management)
 app.register_blueprint(api_get)
+app.register_blueprint(api_permissions)
 
 # -------------------- VIEWS ----------------------
 @crossdomain(origin="*", current_app=app)
@@ -68,4 +70,4 @@ if __name__ == "__main__":
     try:
         app.run("0.0.0.0", config.port)
     except KeyboardInterrupt:
-        globals.cursor.close()
+        globals.connection_pool.close()
