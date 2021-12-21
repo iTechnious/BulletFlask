@@ -16,8 +16,6 @@
     width: 95vw;
     top: auto;
     margin: auto auto;
-    margin-top: 20px;
-    margin-bottom: 100px;
 
     overflow-x: hidden;
 
@@ -31,10 +29,13 @@
     margin-top: 20px;
     margin-bottom: 20px;
 
-    padding: 1px 50px 20px 50px;
+    padding: 20px 50px 20px 50px;
     border-radius: 10px;
     background-color: #081c35d5;
     color: white;
+}
+#forum-contents h1, #category-name {
+    margin-top: 0;
 }
 
 .category {
@@ -45,6 +46,8 @@
     min-height: 100px;
     min-width: 200px;
     background-color: #0f166e;
+
+    padding: 10px;
 
     cursor: pointer;
 
@@ -108,7 +111,7 @@
     padding-left: 18px;
     padding-right: 0px;
 }
-#breadcrumb div div a {
+#start-link {
     cursor: pointer;
 }
 
@@ -172,4 +175,17 @@ pre code {
 }
 .create-buttons {
     margin-top: 40px;
+}
+.move-modal-submit, .delete-modal-submit {
+    margin-top: 20px;
+}
+
+/* Sticky Footer */
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+#page {
+    flex: 1 0 auto;
 }

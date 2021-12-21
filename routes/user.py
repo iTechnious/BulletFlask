@@ -1,10 +1,10 @@
 from urllib.parse import urlparse, urljoin
 
-from flask import Blueprint, url_for, redirect, render_template, request, flash
-from flask_login import current_user, login_required, logout_user, LoginManager, UserMixin
+from bcrypt import checkpw, gensalt, hashpw
+from flask import Blueprint, url_for, redirect, render_template, request
+from flask_login import current_user, login_required, logout_user, LoginManager, UserMixin, login_user
 from flask_sqlalchemy import SQLAlchemy
 
-import api
 from crossdomain import crossdomain
 from globals import app
 from statics import config
@@ -41,7 +41,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "user.login"
 login_manager.session_protection = "strong"
-# login_manager.login_message = "Du bist nicht eingeloggt! Bitte gebe deine Logindaten ein. Dann wirst du zum Ziel weitergeleitet."
+login_manager.login_message = "Du musst dich anmelden, um diese Seite zu besuchen."
 login_manager.login_message_category = "info"
 
 @login_manager.user_loader
@@ -66,7 +66,30 @@ def login():
         return redirect(url_for("home"))
     form = LoginForm()
     if form.is_submitted():
-        return api.login.process(form)
+        user = user_loader(form.username.data)
+        if user:
+            db_pass = "$2b$12$" + "".join(user.password.split("$").pop())
+            db_pass = db_pass.encode("utf-8")
+
+            # form_pass = hashpw(form.password.data.encode("utf-8"), salt)
+            form_pass = form.password.data
+            form_pass = form_pass.encode("utf-8")
+
+            if checkpw(form_pass, db_pass):
+                if login_user(user):
+                    user.is_authenticated = True
+                else:
+                    return "Es gab ein Problem beim Loginvorgang. Ist der Benutzer aktiv?", 903
+
+                db.session.add(user)
+                db.session.commit()
+
+                return "success", 200
+            else:
+                return "Das Passwort war falsch!", 904
+
+        else:
+            return "Benutzer wurde nicht gefunden!", 905
 
     return render_template("login.html", form=form, user=current_user)
 
@@ -89,6 +112,23 @@ def register():
     form = RegisterForm()
 
     if form.is_submitted():
-        return api.register.process(form)
+        if user_loader(form.username.data) is not None:
+            return "Benutzername schon vergeben!", 901
+        if user_loader(form.email.data) is not None:
+            return "E-Mail bereits registriert!", 902
+
+        salt = gensalt()
+        password = hashpw(bytes(form.password.data, "utf-8"), salt).decode("utf-8")
+        user = User(username=form.username.data, email=form.email.data, password=password, is_authenticated=True)
+        db.session.add(user)
+        db.session.commit()
+
+        user = user_loader(form.username.data)
+        user.is_authenticated = True
+        login_user(user)
+        db.session.add(user)
+        db.session.commit()
+
+        return "Erfolg", 200
 
     return render_template("register.html", form=form, user=current_user)

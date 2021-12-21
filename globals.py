@@ -1,6 +1,6 @@
 import mysql.connector.cursor
-from flask import Flask
 from dbutils.pooled_db import PooledDB
+from flask import Flask
 
 from statics import config
 
@@ -32,3 +32,5 @@ connection_pool = PooledDB(mysql.connector, 5,
                            )
 
 connection_pool.connection().cursor().execute("SET NAMES utf8mb4")
+
+cut_objects = {}

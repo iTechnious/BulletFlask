@@ -1,10 +1,9 @@
 import ast
 
 import flask
-from flask import Blueprint, request, render_template, jsonify
+from flask import Blueprint, request
 from flask_login import login_required, current_user
 
-import api
 from crossdomain import crossdomain
 from globals import connection_pool, app
 from statics import config

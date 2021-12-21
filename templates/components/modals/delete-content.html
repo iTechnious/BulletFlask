@@ -1,0 +1,35 @@
+<div id="delete-content-modal" class="modal">
+    <div class="modal-content">
+        <h3>Element löschen</h3>
+        <p>Soll das folgende Element tatsächlich gelöscht werden?</p>
+
+        <table class="stripped highlight responsive-table">
+            <tbody>
+                <tr>
+                    <td>Name</td>
+                    <td id="delete-modal-name"></td>
+                </tr>
+                <tr>
+                    <td>Typ</td>
+                    <td id="delete-modal-type"></td>
+                </tr>
+                <tr>
+                    <td>ID</td>
+                    <td id="delete-modal-id"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form action="/api/content/moderate/delete/" method="get">
+            <input class="delete-modal-form-id" type="hidden" name="id" value="">
+            <button class="delete-modal-submit btn waves-effect waves-light red" type="submit" style="color: white;">Löschen
+                <i class="material-icons right">delete</i>
+            </button>
+        </form>
+
+    </div>
+
+    <div class="modal-footer">
+        <a class="modal-close waves-effect waves-green btn-flat">Abbrechen</a>
+    </div>
+</div>

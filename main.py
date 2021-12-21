@@ -1,13 +1,14 @@
-from flask import request, render_template, redirect, url_for
+from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from flask_scss import Scss
 
-import api
 import globals
 from crossdomain import crossdomain
 from globals import app
 from routes import user
+from routes.api_create import api_create
 from routes.api_get import api_get
+from routes.api_moderate import api_moderate
 from routes.permissions import api_permissions
 from statics import config, init
 
@@ -17,7 +18,9 @@ init.init_db()
 
 app.register_blueprint(user.user_management)
 app.register_blueprint(api_get)
+app.register_blueprint(api_create)
 app.register_blueprint(api_permissions)
+app.register_blueprint(api_moderate)
 
 # -------------------- VIEWS ----------------------
 @crossdomain(origin="*", current_app=app)
@@ -35,14 +38,6 @@ def home():
 @login_required
 def dash():
     return "Dashboard"
-
-
-@crossdomain(origin="*", current_app=app)
-@app.route("/api/content/create/", methods=["POST"])
-@login_required
-def create_content():
-    return api.content.create.process(current_user, request)
-
 
 @app.route('/forum/', defaults={'path': ''})
 @app.route('/forum/<path:path>/')

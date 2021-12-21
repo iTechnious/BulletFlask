@@ -14,9 +14,8 @@ function location_change(location, back=false) {
         .then((res) => { document.getElementById("forum-contents").innerHTML = res
             try {let text = "  " + document.getElementById("thread-contents").innerHTML;
                 let html = converter.makeHtml(text);
-
-                console.log(html);
                 document.getElementById("thread-contents").innerHTML = html;
+
                 document.querySelectorAll("code").forEach( (ele) => {
                     //add copy button to code blocks
                 })
@@ -26,7 +25,7 @@ function location_change(location, back=false) {
                 
             } catch {}
         })
-        .then(clearTimeout(loader)) //prevents animation to play if this is done early
+        .then(clearTimeout(loader)) //prevents animation from playing if this is done early
         .then(document.getElementById("page-load").classList.remove("active"))
         .then(document.getElementById("page-warn").classList.add("hide"))
     ).catch((reason) => {
@@ -42,12 +41,18 @@ function location_change(location, back=false) {
     .then(response => response.json().then(res => location_data = res)
     .then( document.querySelectorAll('.auto-breadcrumb').forEach(e => e.remove()) ))
     .then(() => {
+        var i = 0;
         location_data.forEach(element => {
             link = document.getElementById("start-link").cloneNode();
             link.setAttribute('onclick', 'location_change("'+element['id']+'")');
-            link.innerHTML = element["name"];
+            if (element["name"].length > 15 && i != 0) {
+                link.innerHTML = element["name"].slice(0,15) + "...";
+            } else {
+                link.innerHTML = element["name"];
+            }
             link.classList.add("auto-breadcrumb");
             document.getElementById("start-link").after(link);
+            i++;
         });
     })
     .catch((reason) => {});
@@ -75,7 +80,8 @@ var converter = new showdown.Converter({"simplifiedAutoLink": true,
                                         "strikethrough": true, 
                                         "tasklists": true, 
                                         "smoothLivePreview": true, 
-                                        "emoji": true});
+                                        "emoji": true,
+                                        "simpleLineBreaks": true});
 
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.fixed-action-btn');

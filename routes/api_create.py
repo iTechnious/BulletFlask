@@ -1,14 +1,21 @@
-import flask
-
-import globals
-from globals import connection_pool
-from statics.helpers import permissions_checker
 import json
 
-from statics import config
+import flask
+from flask import Blueprint, request
+from flask_login import login_required, current_user
 
-def process(current_user, request):
-    # print(request.form)
+from crossdomain import crossdomain
+from globals import connection_pool, app
+from statics import config
+from statics.helpers import permissions_checker
+
+api_create = Blueprint("api_create", __name__)
+
+
+@crossdomain(origin="*", current_app=app)
+@api_create.route("/api/content/create/", methods=["POST"])
+@login_required
+def create_content():
     if not request.form["type"] in config.known_types:
         return "Unknown type", 400
 

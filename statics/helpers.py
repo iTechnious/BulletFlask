@@ -1,7 +1,6 @@
 import ast
 import json
 
-import globals
 from globals import connection_pool
 from statics import config
 

@@ -1,10 +1,13 @@
+import json
+
+import flask
 from flask import Blueprint, request, render_template, jsonify
 from flask_login import login_required, current_user
 
-import api
 from crossdomain import crossdomain
 from globals import connection_pool, app
 from statics import config
+from statics.helpers import permissions_checker
 
 api_get = Blueprint("api_get", __name__)
 
@@ -12,10 +15,7 @@ api_get = Blueprint("api_get", __name__)
 @app.route("/api/content/get/")
 @login_required
 def get_content():
-    contents, current = api.content.get.process(current_user, request)
-
-    print("get - contents:", contents)
-    print("get - current:", current)
+    contents, current = api_get_content(current_user, request)
 
     if isinstance(contents, tuple):
         return contents
@@ -27,12 +27,10 @@ def get_content():
         # print("building page for ", request.args["location"])
         contents = [contents[key] for key in contents.keys()]
 
-        print()
-        print()
-        print(current)
-
         return render_template("components/contents.html", contents=contents, current=current)
 
+    if "current" in request.args.keys():
+        return current
     return contents
 
 
@@ -70,3 +68,45 @@ def get_data():
         con.close()
 
     return jsonify(data)
+
+
+def api_get_content(current_user, request):
+    location = request.args["location"]
+    print("getting content for", location)
+
+    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
+        q = f"SELECT `id`, `name` FROM {config.Instance.instance}_content WHERE `id`='{location}'"
+        cursor.execute(q)
+        res = cursor.fetchone()
+        print("checking if location is there:", q, res)
+        if res is None:
+            return flask.abort(flask.Response(response="Location not found", status=404))
+
+        if not permissions_checker(current_user, "view", "all", location):
+            return flask.abort(flask.Response(response="No permission to view this location", status=906))
+
+        q = f"SELECT `id`, `name`, `location`, `type` FROM {config.Instance.instance}_content WHERE `location`='{location}'"
+        cursor.execute(q)
+        content = cursor.fetchall()
+        print("content fetched:", content)
+        print("with:", q)
+
+        q = f"SELECT * FROM {config.Instance.instance}_content WHERE `id`='{location}'"
+        cursor.execute(q)
+        current = cursor.fetchone()
+        print("current fetched:", q, current)
+
+        con.close()
+
+    if current is not None:
+        try:
+            current["permissions"] = json.loads(current["permissions"])[current_user.email]
+        except KeyError:
+            current["permissions"] = {}
+
+    parsed = {}
+
+    for i in range(0, len(content)):
+        parsed[i] = content[i]
+
+    return parsed, current

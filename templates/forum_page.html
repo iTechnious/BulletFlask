@@ -29,14 +29,15 @@
     </div>
 
     <div id="page">
-        <button id="add-button" data-target="create-topic-modal" class="btn-floating btn-large modal-trigger"><i class="material-icons left">add</i></button>
+        <button id="add-button" data-target="create-topic-modal" class="btn-floating btn-large modal-trigger green darken-2"><i class="material-icons left">add</i></button>
         
         <div id="mod-button" class="fixed-action-btn">
-            <a class="btn-floating btn-large">
+            <a class="btn-floating btn-large  green darken-2">
                 <i class="large material-icons">build</i>
             </a>
             <ul>
-                <li><a class="btn-floating red"><i class="material-icons">delete</i></a></li>
+                <li><a onclick="open_fill_modal('delete-modal');" data-target="delete-content-modal" class="btn-floating red modal-trigger"><i class="material-icons">delete</i></a></li>
+                <li><a onclick="open_fill_modal('move-modal');" data-target="move-content-modal" class="btn-floating brown modal-trigger"><i class="material-icons">content_copy</i></a></li>
                 <li><a class="btn-floating orange"><i class="material-icons">lock</i></a></li>
                 <li><a class="btn-floating blue"><i class="material-icons">mode_edit</i></a></li>
             </ul>
@@ -46,6 +47,9 @@
     </div>
     
     {% include "components/modals/create.html" %}
+    {% include "components/modals/delete-content.html" %}
+    {% include "components/modals/move-content.html" %}
+    {% include "components/flash.html" %}
 </body>
 
 <link rel="stylesheet" href="/public/css/code_styles/github-dark.min.css">
@@ -59,7 +63,36 @@
         var instances = M.Modal.init(elems);
     });
 </script>
+<script>
+    function open_fill_modal(modal_name) {
+        document.getElementById(modal_name + "-name").innerHTML = "Einen Moment bitte...";
+        document.getElementById(modal_name + "-id").innerHTML = "Einen Moment bitte...";
+        document.getElementById(modal_name + "-type").innerHTML = "Einen Moment bitte...";
+        Array.prototype.forEach.call(document.getElementsByClassName(modal_name + "-submit"), element => {
+            element.classList.add("disabled");
+        });
 
+        let l = window.location.pathname;
+        let location = l.slice(6).split("/").filter(n => n);
+        location = location.at(-1);
+
+        fetch("/api/content/get/?current&location=" + location)
+        .then((res) => res.json().then((res) => {
+                document.getElementById(modal_name + "-name").innerHTML = res["name"];
+                document.getElementById(modal_name + "-id").innerHTML = res["id"];
+                
+                Array.prototype.forEach.call(document.getElementsByClassName(modal_name + "-form-id"), element => {
+                    element.value = res["id"];
+                });
+                document.getElementById(modal_name + "-type").innerHTML = res["type"];
+                Array.prototype.forEach.call(document.getElementsByClassName(modal_name + "-submit"), element => {
+                    element.classList.remove("disabled");
+                });
+            })
+        );
+    }
+</script>
+{% include "components/footer.html" %}
 {% include "components/script.html" %}
 
 </html>
