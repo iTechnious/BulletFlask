@@ -1,3 +1,5 @@
+import time
+
 import flask
 from flask import Blueprint, request
 from flask_login import login_required, current_user
@@ -97,3 +99,33 @@ def paste_content():
             return flask.redirect("/forum/"+content_id)
         else:
             return "Du hast nicht die nötigen Rechte!", 401
+
+@crossdomain(origin="*", current_app=app)
+@api_moderate.route("/api/content/moderate/edit/")
+@login_required
+def edit():
+    try:
+        content_id = request.form["id"]
+        new_name = request.form["name"]
+        new_content = request.form["content"]
+    except:
+        content_id = request.args["id"]
+        new_name = request.args["name"]
+        new_content = request.args["content"]
+    new_content = "\n" + new_content
+
+    if not permissions_checker(current_user, "moderate", "edit", content_id):
+        return "Du hast nicht die nötigen Rechte!", 401
+
+    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
+        cursor.execute(f"SELECT * FROM `{config.Instance.instance}_content` WHERE `id`='{content_id}'")
+        old_data = cursor.fetchone()
+        cursor.execute(f"INSERT INTO `{config.Instance.instance}_versions` "
+                       f"(content_id, name, content, date) VALUES "
+                       f"('{old_data['id']}', '{old_data['name']}', '{old_data['content']}', '{time.strftime('%Y-%m-%d %H:%M:%S')}')")
+        cursor.execute(f"UPDATE `{config.Instance.instance}_content` SET `name`='{new_name}', `content`='{new_content}' WHERE `id`='{content_id}'")
+        con.commit()
+        con.close()
+
+        flask.flash("Das Element wurde erfolgreich editiert!")
+        return flask.redirect("/forum/" + content_id)

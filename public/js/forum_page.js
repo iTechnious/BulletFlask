@@ -1,14 +1,26 @@
-function location_change(location, back=false) {
+function location_change(location, back=false, version=null) {
+    console.log(`Changing location to\nLocation: ${location}\nBack?: ${back}\nversion: ${version}`)
     let loader = setTimeout(() => {  //delay to prevent loader from flashing
         document.getElementById("page-load").classList.add("active");},
     150);
-
-    if(location == null) { location = "/"; }
-    if(!back) { window.history.pushState(location, "", "/forum/"+ location); }
-
+    
+    let query;
+    let state;
+    let state_url;
+    if(version != null) {
+        query = `/api/content/get/?html&location=${location}&version=${version}`
+        state = {"location": location, "version": version};
+        state_url = "/forum/"+ location + `?version=${version}`;
+    } else {
+        query = `/api/content/get/?html&location=${location}`;
+        state = {"location": location, "version": version};
+        state_url = "/forum/"+ location + "/";
+    }
+    if(!back) { window.history.pushState(state, "", state_url); }
+    
     document.getElementById("create-location").value = location;
 
-    fetch("/api/content/get/?html&location=" + location)
+    fetch(query)
     .then(
         response => response.text()
         .then((res) => { document.getElementById("forum-contents").innerHTML = res
@@ -32,7 +44,7 @@ function location_change(location, back=false) {
         console.log(reason);
         document.getElementById("page-warn").classList.remove("hide");
         setTimeout(() => {
-            location_change(location, back=back);
+            location_change(location, back=back, version);
         }, 5000)
     });
 
@@ -62,18 +74,34 @@ function location_change(location, back=false) {
     });
 }
 
+function findGetParameter(parameterName) {  // credit: https://stackoverflow.com/a/5448595
+    var result = null,
+        tmp = [];
+    var items = location.search.substr(1).split("&");
+    for (var index = 0; index < items.length; index++) {
+        tmp = items[index].split("=");
+        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    }
+    return result;
+}
+
 window.onpopstate = () => {
     let l = window.history.state;
-    location_change(l, back=true)
+    if (l == null) {
+        console.log(window.history.url)
+        location_change(0, back=true, version=null);
+    } else {
+        location_change(l.location, back=true, l.version)
+    }
 }
 
 let l = window.location.pathname;
 if(l.slice(6) == "/") {
-    location_change("0");
+    location_change("0", back=true, version=null);
 } else {
     let location = l.slice(6).split("/").filter(n => n);
     location = location.at(-1);
-    location_change(location, back=true);
+    location_change(location, back=true, version=findGetParameter("version"));
 }
 
 var converter = new showdown.Converter({"simplifiedAutoLink": true,

@@ -17,11 +17,21 @@ api_get = Blueprint("api_get", __name__)
 def get_content():
     contents, current = api_get_content(current_user, request)
 
-    if isinstance(contents, tuple):
+    if isinstance(contents, tuple):  # content is empty
         return contents
 
     if contents == False:  # do NOT change to if not contents!
         return "Location not found", 404
+
+    if "version" in request.args.keys():
+        with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
+            cursor.execute(f"SELECT * FROM {config.Instance.instance}_versions WHERE `id`='{request.args['version']}'")
+            version = cursor.fetchone()
+            if str(current["id"]) != str(version["content_id"]):
+                return "Version ID not found for this post!", 409
+            current["name"] = version["name"]
+            current["content"] = version["content"]
+            con.close()
 
     if "html" in request.args.keys():
         # print("building page for ", request.args["location"])
@@ -69,6 +79,20 @@ def get_data():
 
     return jsonify(data)
 
+@crossdomain(origin="*", current_app=app)
+@api_get.route("/api/content/versions/")
+@login_required
+def versions():
+    location = request.args["location"]
+
+    if not permissions_checker(current_user, "view", "all", location):
+        return "Du hast nicht die nötigen Rechte!", 401
+
+    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
+        cursor.execute(f"SELECT * FROM {config.Instance.instance}_versions WHERE `content_id`='{location}' ORDER BY `id` DESC")
+        res = cursor.fetchall()
+
+    return jsonify(res)
 
 def api_get_content(current_user, request):
     location = request.args["location"]

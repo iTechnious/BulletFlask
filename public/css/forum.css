@@ -176,7 +176,9 @@ pre code {
 .create-buttons {
     margin-top: 40px;
 }
-.move-modal-submit, .delete-modal-submit {
+.move-modal-submit,
+.delete-modal-submit,
+.edit-modal-submit {
     margin-top: 20px;
 }
 

@@ -1,0 +1,12 @@
+bcrypt~=3.2.0
+Flask~=2.0.1
+Flask-Login~=0.5.0
+Flask-SQLAlchemy~=2.5.1
+Flask-Scss~=0.5
+Flask-WTF~=0.15.1
+email-validator~=1.1.2
+SQLAlchemy~=1.4.22
+PyMySQL~=1.0.2
+WTForms~=2.3.3
+mysql-connector-python~=8.0.26
+DBUtils~=2.0.2

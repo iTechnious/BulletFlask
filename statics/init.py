@@ -45,6 +45,14 @@ def init_db():
                        "content TEXT"
                        ")")
 
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS `{conf.Instance.instance}_versions` ("
+                       "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,"
+                       "content_id INT,"
+                       "name VARCHAR(255),"
+                       "content TEXT,"
+                       "date DATETIME"
+                       ")")
+
         print()
         connection.commit()
         connection.close()

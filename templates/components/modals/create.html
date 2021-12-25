@@ -21,7 +21,7 @@
                     <div class="input-field col s12">
                         <textarea name="content" id="thread-content" class="materialize-textarea"></textarea>
                         <label for="thread-content">Inhalt des Threads (Markdown/Plaintext)</label>
-                        <a class="btn-floating btn-large waves-effect waves-light red" onclick="markdown_edit()"><i class="material-icons">edit</i></a>
+                        <a class="btn-floating btn-large waves-effect waves-light red" onclick="create_markdown_edit()"><i class="material-icons">edit</i></a>
                         <-- Diese Funktion benutzt <a href="http://stackedit.io" target="_blank">"StackEdit"</a>. 
                     </div>
         
@@ -63,22 +63,22 @@
 
 <script src="https://unpkg.com/stackedit-js@1.0.7/docs/lib/stackedit.min.js"></script>
 <script>
-    const el = document.getElementById("thread-content");
-    const stackedit = new Stackedit();
+    const create_se_el = document.getElementById("thread-content");
+    const create_stackedit = new Stackedit();
 
-    function markdown_edit() {
+    function create_markdown_edit() {
         // Open the iframe
-        stackedit.openFile({
+        create_stackedit.openFile({
             name: '', // with an optional filename
             content: {
-            text: el.value // and the Markdown content.
+            text: create_se_el.value // and the Markdown content.
             }
         });
     }
 
     // Listen to StackEdit events and apply the changes to the textarea.
-    stackedit.on('fileChange', (file) => {
-        el.value = file.content.text;
+    create_stackedit.on('fileChange', (file) => {
+        create_se_el.value = file.content.text;
     });
 
     $(document).ready(() => {
