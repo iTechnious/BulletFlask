@@ -120,10 +120,14 @@ def edit():
     with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
         cursor.execute(f"SELECT * FROM `{config.Instance.instance}_content` WHERE `id`='{content_id}'")
         old_data = cursor.fetchone()
+
+        query = (old_data['id'], old_data['name'], old_data['content'], time.strftime('%Y-%m-%d %H:%M:%S'))
         cursor.execute(f"INSERT INTO `{config.Instance.instance}_versions` "
                        f"(content_id, name, content, date) VALUES "
-                       f"('{old_data['id']}', '{old_data['name']}', '{old_data['content']}', '{time.strftime('%Y-%m-%d %H:%M:%S')}')")
-        cursor.execute(f"UPDATE `{config.Instance.instance}_content` SET `name`='{new_name}', `content`='{new_content}' WHERE `id`='{content_id}'")
+                       f"(%s, %s, %s, %s)", query)
+
+        query = (new_name, new_content, content_id)
+        cursor.execute(f"UPDATE `{config.Instance.instance}_content` SET `name`=%s, `content`=%s WHERE `id`=%s", query)
         con.commit()
         con.close()
 

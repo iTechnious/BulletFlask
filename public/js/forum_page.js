@@ -23,20 +23,42 @@ function location_change(location, back=false, version=null) {
     fetch(query)
     .then(
         response => response.text()
-        .then((res) => { document.getElementById("forum-contents").innerHTML = res
-            try {let text = "  " + document.getElementById("thread-contents").innerHTML;
-                let html = converter.makeHtml(text);
-                document.getElementById("thread-contents").innerHTML = html;
+        /*
+        .then(res => {
+            document.getElementById("forum-contents").innerHTML = res;
 
+            console.log(res);
+            var stack_converter = new Stackedit();
+
+            try {
+                stack_converter.openFile({
+                    name: "",
+                    content: {text: document.getElementById("thread-contents").innerHTML}
+                }, true);
+            } catch (error) { }
+
+            stack_converter.on("fileChange", file => {
+                console.log(file.content.html);
+                document.getElementById("thread-contents").innerHTML = file.content.html;
+            });
+        })*/
+        .then(res => { 
+            document.getElementById("forum-contents").setHTML(res);
+            try {
+                let text = "  " + document.getElementById("thread-contents").innerHTML;
+
+                let html = converter.makeHtml(text);
+                console.log(html);
+                document.getElementById("thread-contents").setHTML(html);
                 document.querySelectorAll("code").forEach( (ele) => {
                     //add copy button to code blocks
                 })
                 document.querySelectorAll('pre code').forEach((el) => {
                     hljs.highlightElement(el);
                 });
-                
             } catch {}
         })
+        .then(window.scrollTo(0, 0))
         .then(clearTimeout(loader)) //prevents animation from playing if this is done early
         .then(document.getElementById("page-load").classList.remove("active"))
         .then(document.getElementById("page-warn").classList.add("hide"))
@@ -95,15 +117,6 @@ window.onpopstate = () => {
     }
 }
 
-let l = window.location.pathname;
-if(l.slice(6) == "/") {
-    location_change("0", back=true, version=null);
-} else {
-    let location = l.slice(6).split("/").filter(n => n);
-    location = location.at(-1);
-    location_change(location, back=true, version=findGetParameter("version"));
-}
-
 var converter = new showdown.Converter({"simplifiedAutoLink": true,
                                         "strikethrough": true, 
                                         "tasklists": true, 
@@ -117,4 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
         direction: 'top',
         hoverEnabled: false
     });
+
+    let l = window.location.pathname;
+    if(l.slice(6) == "/") {
+        location_change("0", back=true, version=null);
+    } else {
+        let location = l.slice(6).split("/").filter(n => n);
+        location = location.at(-1);
+        location_change(location, back=true, version=findGetParameter("version"));
+    }
 });

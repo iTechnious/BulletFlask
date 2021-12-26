@@ -13,8 +13,9 @@ api_get = Blueprint("api_get", __name__)
 
 @crossdomain(origin="*", current_app=app)
 @app.route("/api/content/get/")
-@login_required
+# @login_required
 def get_content():
+    current_user = None
     contents, current = api_get_content(current_user, request)
 
     if isinstance(contents, tuple):  # content is empty
@@ -36,6 +37,8 @@ def get_content():
     if "html" in request.args.keys():
         # print("building page for ", request.args["location"])
         contents = [contents[key] for key in contents.keys()]
+
+        print("\n\n", contents, current, "\n\n")
 
         return render_template("components/contents.html", contents=contents, current=current)
 
@@ -106,9 +109,10 @@ def api_get_content(current_user, request):
         if res is None:
             return flask.abort(flask.Response(response="Location not found", status=404))
 
+        """
         if not permissions_checker(current_user, "view", "all", location):
             return flask.abort(flask.Response(response="No permission to view this location", status=906))
-
+        """
         q = f"SELECT `id`, `name`, `location`, `type` FROM {config.Instance.instance}_content WHERE `location`='{location}'"
         cursor.execute(q)
         content = cursor.fetchall()
@@ -122,15 +126,17 @@ def api_get_content(current_user, request):
 
         con.close()
 
+    """
     if current is not None:
         try:
             current["permissions"] = json.loads(current["permissions"])[current_user.email]
         except KeyError:
             current["permissions"] = {}
-
+    """
     parsed = {}
 
+    """
     for i in range(0, len(content)):
         parsed[i] = content[i]
-
-    return parsed, current
+    """
+    return jsonify(content), current

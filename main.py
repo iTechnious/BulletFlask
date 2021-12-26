@@ -56,6 +56,8 @@ def add_header(r):
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
+
+    r.headers["Access-Control-Allow-Origin"] = "*"
     return r
 
 

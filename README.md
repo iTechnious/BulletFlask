@@ -16,3 +16,4 @@
 * [materialize](https://github.com/Dogfalo/materialize) (Licence=MIT)
 * [jquery](https://github.com/jcushman/pdfquery) (Licence=MIT)
 * [stackedit.js](https://github.com/benweet/stackedit.js) (Licence=MIT)
+* [react](https://github.com/facebook/react) (Licence=MIT)

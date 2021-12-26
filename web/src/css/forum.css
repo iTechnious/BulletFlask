@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
+main {
+    overflow: hidden;
+    height: fit-content;
+    width: 95vw;
+    max-width: 1000px;
+    top: auto;
+    margin: auto auto;
+
+    overflow-x: hidden;
+
+    font-family: 'Open Sans', sans-serif;
+}
