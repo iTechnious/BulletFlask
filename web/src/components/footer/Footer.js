@@ -1,7 +1,7 @@
-import React from "react";
-import "./footer.css"
+import React from 'react';
+import './Footer.css';
 
-const Footer = ( ) => {
+const Footer = () => {
     return (
         <footer className="page-footer">
             <div className="container">

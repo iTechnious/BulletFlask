@@ -1,5 +1,5 @@
 import React from 'react';
-import Thread from '../thread/thread';
+import Thread from '../thread/Thread';
 import Category from '../category/Category';
 
 const Content = ({ data }) => {

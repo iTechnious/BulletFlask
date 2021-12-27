@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Current from '../components/content/current';
+import Current from '../components/content/Current';
 import Content from '../components/content/Content';
-import Footer from '../components/footer/footer';
-import "../css/forum.css";
+import Footer from '../components/footer/Footer';
+import '../css/Forum.css';
 
 const Forum = () => {
     // Info about the current element.
