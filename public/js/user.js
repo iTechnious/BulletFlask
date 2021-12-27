@@ -29,7 +29,7 @@ function login() {
 }
 
 function register() {
-    document.getElementById("load").classList.add("active");
+    //document.getElementById("load").classList.add("active");
     let button = document.getElementById("login-button");
     button.classList.add("disabled");
 

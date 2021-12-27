@@ -25,7 +25,6 @@ def permissions_checker(user, action_group, action, id):
     if "admin" in user.groups:
         return True
 
-    print("permission check with:", action, id)
     permissions = json.loads(user.permissions)
 
     with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
@@ -33,7 +32,6 @@ def permissions_checker(user, action_group, action, id):
         location = cursor.fetchone()["location"]
 
         q = f'SELECT * FROM {config.Instance.user_instance}_content WHERE `id`="{id}"'
-        print(q, location)
         cursor.execute(q)
 
         parent = cursor.fetchone()
@@ -42,13 +40,9 @@ def permissions_checker(user, action_group, action, id):
         for group_id in ast.literal_eval(user.groups):
             cursor.execute(f"SELECT * FROM `{config.Instance.user_instance}_groups` WHERE `id`='{group_id}'")
             user_group = cursor.fetchone()
-            print("user has group:", user_group, group_id)
             group_permissions.append(json.loads(user_group["permissions"]))
-        print("Group permissions:", group_permissions)
 
         con.close()
-
-    print("permission check on:", parent)
 
     if parent is not None:
         parent_permissions = json.loads(parent["permissions"])

@@ -32,7 +32,7 @@ class User(db.Model, UserMixin):
     groups = db.Column(db.Text, default="[]")
 
     def get_id(self):
-        return self.username
+        return self.email
 
     is_anonymous = False
 
@@ -46,10 +46,7 @@ login_manager.login_message_category = "info"
 
 @login_manager.user_loader
 def user_loader(user_id):
-    # return User.query.get(user_id)
-    user = User.query.filter_by(username=user_id).first()
-    if not user:
-        user = User.query.filter_by(email=user_id).first()
+    user = User.query.filter_by(email=user_id).first()
 
     return user
 
@@ -63,10 +60,10 @@ def is_safe_url(target):
 @user_management.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("home"))
+        return "already logged in", 202
     form = LoginForm()
     if form.is_submitted():
-        user = user_loader(form.username.data)
+        user = user_loader(form.email.data)
         if user:
             db_pass = "$2b$12$" + "".join(user.password.split("$").pop())
             db_pass = db_pass.encode("utf-8")
@@ -79,19 +76,20 @@ def login():
                 if login_user(user):
                     user.is_authenticated = True
                 else:
-                    return "Es gab ein Problem beim Loginvorgang. Ist der Benutzer aktiv?", 903
+                    return "there was a problem loggin you in. is the user active?", 403
 
                 db.session.add(user)
                 db.session.commit()
 
                 return "success", 200
             else:
-                return "Das Passwort war falsch!", 904
+                return "wrong password", 401
 
         else:
-            return "Benutzer wurde nicht gefunden!", 905
+            return "user not found", 404
 
-    return render_template("login.html", form=form, user=current_user)
+    #return render_template("login.html", form=form, user=current_user)
+    return "submit login data via form-data", 400
 
 
 @crossdomain(origin="*", current_app=app)
@@ -103,7 +101,7 @@ def logout():
     db.session.add(user)
     db.session.commit()
     logout_user()
-    return redirect(url_for("home"))
+    return "success", 200
 
 
 @user_management.route("/register/", methods=["GET", "POST"])
@@ -112,10 +110,8 @@ def register():
     form = RegisterForm()
 
     if form.is_submitted():
-        if user_loader(form.username.data) is not None:
-            return "Benutzername schon vergeben!", 901
         if user_loader(form.email.data) is not None:
-            return "E-Mail bereits registriert!", 902
+            return "email already taken", 409
 
         salt = gensalt()
         password = hashpw(bytes(form.password.data, "utf-8"), salt).decode("utf-8")
@@ -129,6 +125,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return "Erfolg", 200
+        return "success", 200
 
-    return render_template("register.html", form=form, user=current_user)
+    # return render_template("register.html", form=form, user=current_user)
+    return "submit data via form-data", 400
