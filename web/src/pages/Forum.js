@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Container } from '@mui/material';
 import Current from '../components/content/Current';
 import Content from '../components/content/Content';
 import Footer from '../components/footer/Footer';
@@ -13,13 +14,27 @@ const Forum = () => {
     const getData = (location) => {
         location = location.toString();
 
-        fetch('/api/content/get/?location=' + location)
-            .then(res => res.json())
-            .then(data => {
-                setCurrent(data['current']);
-                setContent(data['contents']);
+        var formData = new FormData();
+
+        fetch('/login/', {
+            method: 'POST',
+            credentials: 'include'
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    fetch('/api/content/get/?location=' + location, {
+                        credentials: 'include'
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            setCurrent(data['current']);
+                            setContent(data['contents']);
+                        })
+                        .catch(console.log);
+                }
             })
-            .catch(console.log);
+
+
     } 
 
     useEffect(() => getData(0), []);
@@ -28,10 +43,10 @@ const Forum = () => {
 
     return (
         <>
-            <main>
+            <Container>
                 <Current data={ current } />
                 <Content data={ content } />
-            </main>
+            </Container>
             <Footer />
         </>
     );
