@@ -1,6 +1,5 @@
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import React from 'react';
-import './Category.css';
 
 const Category = ({ data }) => {
     return (
@@ -12,10 +11,7 @@ const Category = ({ data }) => {
                     </Typography>
                     
                     <Typography variant="h5">{ data.name }</Typography>
-                    
-                    <Typography variant="body2">
-                        Beschreibung
-                    </Typography>
+
                 </CardContent>
                 <CardActions>
                     <Button size="small">Ansehen</Button>
