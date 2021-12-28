@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import Forum from './pages/Forum';
 import reportWebVitals from './reportWebVitals';
 import "./index.css";
+import { UserProvider } from './context/UserContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Forum />
+      <UserProvider>
+        <Forum />
+      </UserProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
