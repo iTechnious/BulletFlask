@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Forum from './pages/Forum';
 import reportWebVitals from './reportWebVitals';
 import "./index.css";
 import { UserProvider } from './context/UserContext';
+import Router from './Router';
 
 ReactDOM.render(
   <React.StrictMode>
       <UserProvider>
-        <Forum />
+        <Router />
       </UserProvider>
   </React.StrictMode>,
   document.getElementById('root')

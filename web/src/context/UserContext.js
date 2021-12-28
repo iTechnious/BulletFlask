@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
             credentials: 'include'
         })
         .then(res => {
-            if (res.status === 200) setLoggedIn(true);
+            if (res.status === 200 || res.status === 202) setLoggedIn(true);
             else setLoggedIn(false);
 
             setPending(false); 
