@@ -57,7 +57,15 @@ def user_loader(user_id):
 @user_management.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return {"message": "already logged in"}, 202
+        response = {
+            "message": "Already signed in.",
+            "user": {
+                "username": current_user.username
+            }
+        }
+
+        return response, 202
+
     form = LoginForm()
     if form.is_submitted():
         user = user_loader(form.email.data)
@@ -78,7 +86,14 @@ def login():
                 db.session.add(user)
                 db.session.commit()
 
-                return {"message": "success", "username": user.username}, 200
+                response = {
+                    "message": "Success!",
+                    "user": {
+                        "username": user.username
+                    }
+                }
+
+                return response, 200
             else:
                 return {"error": "wrong password"}, 401
 
