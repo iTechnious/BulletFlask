@@ -1,12 +1,12 @@
 import json
 
 import flask
-from flask import Blueprint, request, render_template, jsonify
+from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 
 from crossdomain import crossdomain
-from globals import connection_pool, app
-from statics import config
+from globals import app
+from statics import db
 from statics.helpers import permissions_checker
 
 api_get = Blueprint("api_get", __name__)
@@ -17,68 +17,67 @@ api_get = Blueprint("api_get", __name__)
 def get_content():
     location = request.args["location"]
 
-    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-        q = f"SELECT `id`, `name` FROM {config.Instance.instance}_content WHERE `id`='{location}'"
-        cursor.execute(q)
-        res = cursor.fetchone()
-        if res is None:
-            return flask.abort(flask.Response(response="Location not found", status=404))
+    session = db.factory()
 
-        if not permissions_checker(current_user, "view", "all", location):
-            return flask.abort(flask.Response(response="No permission to view this location", status=906))
+    res = session.query(db.Content).filter_by(id=location).first()
+    if res is None:
+        return flask.abort(flask.Response(response="Location not found", status=404))
 
-        q = f"SELECT `id`, `name`, `location`, `type` FROM {config.Instance.instance}_content WHERE `location`='{location}'"
-        cursor.execute(q)
-        content = cursor.fetchall()
+    if not permissions_checker(current_user, "view", "all", location):
+        return flask.abort(flask.Response(response="No permission to view this location", status=906))
 
-        q = f"SELECT * FROM {config.Instance.instance}_content WHERE `id`='{location}'"
-        cursor.execute(q)
-        current = cursor.fetchone()
+    content = session.query(db.Content).filter_by(location=location).all()
+    _current = session.query(db.Content).filter_by(id=location).first()
 
-        con.close()
+    current = _current
 
     if current is not None:
         try:
-            current["permissions"] = json.loads(current["permissions"])[current_user.email]
+            current.permissions = current.permissions[current_user.email]
         except KeyError:
-            current["permissions"] = {}
+            current.permissions = {}
 
-    ################## DONE FETCHING DATA ###################
-
+    ################## DONE FETCHING DATA ##################
     if isinstance(content, tuple):  # content is empty
         return content
 
     if content == False:  # do NOT change to if not content!
         return {"error": "location not found"}, 404
 
-    if "breadcrumb" in request.args:
-        with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-            data = []
-
-            cursor.execute(f"SELECT id, name, location FROM {config.Instance.instance}_content WHERE `id`='{request.args['location']}'")
-            res = cursor.fetchone()
-            data.append(res)
-            while res["id"] != 0:
-                cursor.execute(f"SELECT id, name, location FROM {config.Instance.instance}_content WHERE `id`='{res['location']}'")
-                res = cursor.fetchone()
-                data.append(res)
-
-            if None in data:
-                data.remove(None)
-
-            # data = [element for element in data if element["id"] != 0]  # Filter out root entry, which is already in the page
-
+    ################## UPDATING CONTENT IF VERSION ID IS SPECIFIED ##################
     if "version" in request.args.keys():
-        with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-            cursor.execute(f"SELECT * FROM {config.Instance.instance}_versions WHERE `id`='{request.args['version']}'")
-            version = cursor.fetchone()
-            if str(current["id"]) != str(version["content_id"]):
-                return {"error": "version ID not found for this post!"}, 409
-            current["name"] = version["name"]
-            current["content"] = version["content"]
-            con.close()
-    
-    return jsonify({"current": current, "contents": content})
+        version = session.query(db.Versions).filter_by(id=request.args["verions"]).first()
+
+        if str(current["id"]) != str(version["content_id"]):
+            return {"error": "version ID not found for this post!"}, 409
+        current["name"] = version["name"]
+        current["content"] = version["content"]
+
+    session.close()
+
+    ################## PARSE SQLA OBJECTS TO JSON ##################
+    return jsonify(
+        {
+            "current": {c.name: str(getattr(current, c.name)) for c in current.__table__.columns},
+            "contents": [{c.name: str(getattr(x, c.name)) for c in x.__table__.columns if c.name in ["id", "type", "name"]} for x in content]
+         }
+    )
+
+@crossdomain(origin="*", current_app=app)
+@api_get.route("/api/content/breadcrumb/")
+@login_required
+def breadcrumb():
+    data = []
+    session = db.factory()
+
+    res = session.query(db.Content).filter_by(id=request.args["location"]).first()
+    data.append(res)
+    while res["id"] != 0:
+        res = session.query(db.Content).filter_by(id=res["location"]).first()
+        data.append(res)
+
+    if None in data:
+        data.remove(None)
 
 @crossdomain(origin="*", current_app=app)
 @api_get.route("/api/content/versions/")
@@ -89,8 +88,9 @@ def versions():
     if not permissions_checker(current_user, "view", "all", location):
         return {"error": "missing permissions"}, 403
 
-    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-        cursor.execute(f"SELECT * FROM {config.Instance.instance}_versions WHERE `content_id`='{location}' ORDER BY `id` DESC")
-        res = cursor.fetchall()
+    session = db.factory()
+
+    res = session.query(db.Versions).filter_by(content_id=location).order_by(db.Versions.id)
+    res = reversed(res)
 
     return jsonify(res)

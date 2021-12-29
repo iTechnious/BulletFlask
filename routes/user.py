@@ -1,24 +1,10 @@
-from urllib.parse import urlparse, urljoin
-
 from bcrypt import checkpw, gensalt, hashpw
-from flask import Blueprint, url_for, redirect, render_template, request
+from flask import Blueprint
 from flask_login import current_user, login_required, logout_user, LoginManager, UserMixin, login_user
 from flask_sqlalchemy import SQLAlchemy
 
-from crossdomain import crossdomain
-from globals import app
-from statics import config
-from statics.forms import LoginForm, RegisterForm
-
-user_management = Blueprint("user", __name__)
-
-app.config[
-    "SQLALCHEMY_DATABASE_URI"] = f"{config.DB.type}+{config.DB.driver}://{config.DB.user}:{config.DB.password}@" \
-                                 f"{config.DB.host}:{config.DB.port}/{config.DB.db}"
-
 db = SQLAlchemy()
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db.init_app(app)
+from statics import config
 
 class User(db.Model, UserMixin):
     __tablename__ = config.Instance.user_instance + "_users"
@@ -28,13 +14,27 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     is_authenticated = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
-    permissions = db.Column(db.Text, default="{}")
-    groups = db.Column(db.Text, default="[]")
+    permissions = db.Column(db.JSON, default={})
+    groups = db.Column(db.ARRAY(db.Integer), default=[])
 
     def get_id(self):
         return self.email
 
     is_anonymous = False
+
+
+from crossdomain import crossdomain
+from globals import app
+from statics.forms import LoginForm, RegisterForm
+
+user_management = Blueprint("user", __name__)
+
+app.config[
+    "SQLALCHEMY_DATABASE_URI"] = f"{config.DB.type}+{config.DB.driver}://{config.DB.user}:{config.DB.password}@" \
+                                 f"{config.DB.host}:{config.DB.port}/{config.DB.db}"
+
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
 
 
 login_manager = LoginManager()
