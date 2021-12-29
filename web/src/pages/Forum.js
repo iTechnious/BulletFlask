@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import Current from '../components/content/Current';
 import Content from '../components/content/Content';
-import Footer from '../components/footer/Footer';
 import '../css/Forum.css';
 
 const Forum = () => {
@@ -33,13 +32,10 @@ const Forum = () => {
     if (current === null || content === null) return null;
 
     return (
-        <>
-            <Container>
-                <Current data={ current } />
-                <Content data={ content } />
-            </Container>
-            <Footer />
-        </>
+        <Container>
+            <Current data={ current } />
+            <Content data={ content } />
+        </Container>
     );
 }
 
