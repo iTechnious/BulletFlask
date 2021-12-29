@@ -8,6 +8,8 @@ export const UserProvider = ({ children }) => {
     const [loggedIn, setLoggedIn] = useState(false);
     // Whether or not the login request is already done.
     const [pending, setPending] = useState(true);
+    // User object returned by the /login/ API.
+    const [user, setUser] = useState({});
 
     // Check if user is already logged in.
     useEffect(() => {
@@ -19,8 +21,13 @@ export const UserProvider = ({ children }) => {
             credentials: 'include'
         })
         .then(res => {
-            if (res.status === 200 || res.status === 202) setLoggedIn(true);
-            else setLoggedIn(false);
+            if (res.status === 200 || res.status === 202) {
+                setLoggedIn(true);
+                // Parse response and save user object in state.
+                res.json().then(res => setUser(res.user));
+            } else {
+                setLoggedIn(false);
+            }
 
             setPending(false); 
         });
@@ -34,7 +41,9 @@ export const UserProvider = ({ children }) => {
                 loggedIn,
                 setLoggedIn,
                 pending,
-                setPending
+                setPending,
+                user,
+                setUser
             }}
         >
             { children }
