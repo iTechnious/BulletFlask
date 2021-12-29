@@ -14,7 +14,7 @@ i18n
       loadPath: '/assets/i18n/{{ns}}/{{lng}}.json'
     },
     fallbackLng: 'en',
-    debug: true,
+    debug: process.env.NODE_ENV === 'development',
     ns: ['translations'],
     defaultNS: 'translations',
     keySeparator: false,
@@ -26,5 +26,5 @@ i18n
       wait: true
     }
   });
-
+  console.log()
 export default i18n;
