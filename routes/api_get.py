@@ -12,7 +12,7 @@ from statics.helpers import permissions_checker
 api_get = Blueprint("api_get", __name__)
 
 @crossdomain(origin="*", current_app=app)
-@app.route("/api/content/get/")
+@api_get.route("/api/content/get/")
 @login_required
 def get_content():
     location = request.args["location"]
@@ -49,7 +49,7 @@ def get_content():
         return content
 
     if content == False:  # do NOT change to if not content!
-        return "location not found", 404
+        return {"error": "location not found"}, 404
 
     if "breadcrumb" in request.args:
         with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
@@ -73,7 +73,7 @@ def get_content():
             cursor.execute(f"SELECT * FROM {config.Instance.instance}_versions WHERE `id`='{request.args['version']}'")
             version = cursor.fetchone()
             if str(current["id"]) != str(version["content_id"]):
-                return "Version ID not found for this post!", 409
+                return {"error": "version ID not found for this post!"}, 409
             current["name"] = version["name"]
             current["content"] = version["content"]
             con.close()
@@ -87,7 +87,7 @@ def versions():
     location = request.args["location"]
 
     if not permissions_checker(current_user, "view", "all", location):
-        return "missing permissions", 403
+        return {"error": "missing permissions"}, 403
 
     with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
         cursor.execute(f"SELECT * FROM {config.Instance.instance}_versions WHERE `content_id`='{location}' ORDER BY `id` DESC")

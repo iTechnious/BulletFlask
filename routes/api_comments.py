@@ -29,4 +29,4 @@ def comment():
             query = (content_id, "comment", old["permissions"], content)
             cursor.execute(f"INSERT INTO `{config.Instance.instance}_content` (`location`, `type`, `permissions`, `content`) VALUES (%s, %s, %s, %s)", query)
     else:
-        return "missing permissions", 403
+        return {"error": "missing permissions"}, 403

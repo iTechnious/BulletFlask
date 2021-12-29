@@ -22,29 +22,6 @@ app.register_blueprint(api_create)
 app.register_blueprint(api_permissions)
 app.register_blueprint(api_moderate)
 
-# -------------------- VIEWS ----------------------
-@crossdomain(origin="*", current_app=app)
-@app.route("/")
-def root():
-    return redirect(url_for("home"))
-
-@crossdomain(origin="*", current_app=app)
-@app.route("/home/")
-def home():
-    return render_template("index.html", user=current_user)
-
-@crossdomain(origin="*", current_app=app)
-@app.route("/dash/")
-@login_required
-def dash():
-    return "Dashboard"
-
-@app.route('/forum/', defaults={'path': ''})
-@app.route('/forum/<path:path>/')
-@login_required
-def forum(path):
-    return render_template("forum_page.html", user=current_user)
-
 @app.after_request
 def add_header(r):
     """

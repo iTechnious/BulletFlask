@@ -39,10 +39,13 @@ class User(db.Model, UserMixin):
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "user.login"
 login_manager.session_protection = "strong"
-login_manager.login_message = "Du musst dich anmelden, um diese Seite zu besuchen."
-login_manager.login_message_category = "info"
+login_manager.login_message = False
+
+@app.errorhandler(401)
+def not_logged_in(e):
+    return {"message": "you are not logged in!", "error": str(e)}, 401
+
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -50,17 +53,11 @@ def user_loader(user_id):
 
     return user
 
-def is_safe_url(target):
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
-
-
 @crossdomain(origin="*", current_app=app)
 @user_management.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return "already logged in", 202
+        return {"message": "already logged in"}, 202
     form = LoginForm()
     if form.is_submitted():
         user = user_loader(form.email.data)
@@ -76,20 +73,19 @@ def login():
                 if login_user(user):
                     user.is_authenticated = True
                 else:
-                    return "there was a problem loggin you in. is the user active?", 403
+                    return {"error": "there was a problem loggin you in. is the user active?"}, 403
 
                 db.session.add(user)
                 db.session.commit()
 
-                return "success", 200
+                return {"message": "success", "username": user.username}, 200
             else:
-                return "wrong password", 401
+                return {"error": "wrong password"}, 401
 
         else:
-            return "user not found", 404
+            return {"error": "user not found"}, 404
 
-    #return render_template("login.html", form=form, user=current_user)
-    return "submit login data via form-data", 400
+    return {"message": "submit login data via form-data", "error": "no form recieved"}, 400
 
 
 @crossdomain(origin="*", current_app=app)
@@ -101,7 +97,7 @@ def logout():
     db.session.add(user)
     db.session.commit()
     logout_user()
-    return "success", 200
+    return {"message": "success"}, 200
 
 
 @user_management.route("/register/", methods=["GET", "POST"])
@@ -111,7 +107,7 @@ def register():
 
     if form.is_submitted():
         if user_loader(form.email.data) is not None:
-            return "email already taken", 409
+            return {"error": "email already taken"}, 409
 
         salt = gensalt()
         password = hashpw(bytes(form.password.data, "utf-8"), salt).decode("utf-8")
@@ -119,13 +115,12 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        user = user_loader(form.username.data)
+        user = user_loader(form.email.data)
         user.is_authenticated = True
         login_user(user)
         db.session.add(user)
         db.session.commit()
 
-        return "success", 200
+        return {"message": "success"}, 200
 
-    # return render_template("register.html", form=form, user=current_user)
-    return "submit data via form-data", 400
+    return {"message": "submit login data via form-data", "error": "no form recieved"}, 400

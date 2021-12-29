@@ -3,4 +3,5 @@ package-lock.json
 .next/
 statics/config.py
 .vs/
+.idea/
 __pycache__/

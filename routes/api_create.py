@@ -17,11 +17,11 @@ api_create = Blueprint("api_create", __name__)
 @login_required
 def create_content():
     if not request.args["type"] in config.known_types:
-        return "Unknown type", 400
+        return {"error": "Unknown type"}, 400
 
     permission = permissions_checker(current_user, "create", request.args["type"], request.args["location"])
     if not permission:
-        return "missing permissions", 403
+        return {"error": "missing permissions"}, 403
 
     elif permission:
         data = {"name": request.args["name"], "location": request.args["location"], "type": request.args["type"]}
@@ -39,7 +39,7 @@ def create_content():
                 print("inserting data: ", query)
                 cursor.execute(f"INSERT INTO `{config.Instance.instance}_content` (name, location, type, content, permissions) VALUES (%s, %s, %s, %s, %s)", query)
             else:
-                return "Unknown Type", 400
+                return {"error": "Unknown Type"}, 400
 
             dest = str(cursor.lastrowid)  # get destination to redirect the client to
             print(dest)
@@ -47,6 +47,6 @@ def create_content():
             con.commit()
             con.close()
 
-        return "success", 201
+        return {"message": "success"}, 201
     else:
         return permission, 500
