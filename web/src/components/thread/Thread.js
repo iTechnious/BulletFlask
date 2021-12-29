@@ -1,21 +1,21 @@
-import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import React from 'react';
 import {t} from "i18next";
+import { Link } from 'react-router-dom';
 
 const Thread = ({ data }) => {
     return (
-        <Card className="thread" sx={{ marginTop: '20px' }}>
-            <CardContent>
-                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    {t('THREAD')}
-                </Typography>
+        <Link to="/" style={{ textDecoration: 'inherit' }}>
+            <Card className="thread" sx={{ padding: '10px', marginTop: '20px' }}>
+                <CardContent>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        {t('THREAD')}
+                    </Typography>
 
-                <Typography variant="h5">{ data.name }</Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small">{t("VIEW")}</Button>
-            </CardActions>
-        </Card>
+                    <Typography variant="h5">{ data.name }</Typography>
+                </CardContent>
+            </Card>
+        </Link>
     );
 }
 
