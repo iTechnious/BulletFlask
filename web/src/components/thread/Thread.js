@@ -9,7 +9,7 @@ const Thread = ({ data }) => {
             <Card className="thread" sx={{ padding: '10px', marginTop: '20px' }}>
                 <CardContent>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        {t('THREAD')}
+                        { t('THREAD') }
                     </Typography>
 
                     <Typography variant="h5">{ data.name }</Typography>

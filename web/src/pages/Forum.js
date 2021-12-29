@@ -3,6 +3,7 @@ import { Container } from '@mui/material';
 import Current from '../components/content/Current';
 import Content from '../components/content/Content';
 import '../css/Forum.css';
+import Navbar from '../components/navbar/Navbar';
 
 const Forum = () => {
     // Info about the current element.
@@ -32,10 +33,13 @@ const Forum = () => {
     if (current === null || content === null) return null;
 
     return (
-        <Container>
-            <Current data={ current } />
-            <Content data={ content } />
-        </Container>
+        <>
+            <Navbar />
+            <Container>
+                <Current data={ current } />
+                <Content data={ content } />
+            </Container>
+        </>
     );
 }
 
