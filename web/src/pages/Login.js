@@ -1,10 +1,9 @@
-import { Avatar, Button, Checkbox, Link, FormControlLabel, Grid, TextField, Typography, CssBaseline, Container } from '@mui/material';
+import { Avatar, Button, Checkbox, Link, FormControlLabel, Grid, TextField, Typography, CssBaseline, Container, CircularProgress, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
-import { Navigate } from 'react-router-dom';
-import {t} from "i18next";
+import { t } from "i18next";
 
 
 /**
@@ -15,12 +14,15 @@ import {t} from "i18next";
  */
 const Login = () => {
     // Grab user states from global states.
-    const { loggedIn, pending, setLoggedIn, setPending } = useContext(UserContext);
+    const { loggedIn, pending, setLoggedIn, setPending, setUser } = useContext(UserContext);
+
+    // Error/message returned by the API.
+    const [error, setError] = useState('');
     
     const handleLoginAttempt = (event) => {
         // Prevent browser for submission redirect.
         event.preventDefault();
-        
+
         // Construct FormData from values in the form.
         var formData = new FormData(event.currentTarget);
         
@@ -31,8 +33,18 @@ const Login = () => {
             body: formData
         })
         .then(res => {
-            if (res.status === 200 || res.status === 202) setLoggedIn(true);
-            else setLoggedIn(false);
+            if (res.status === 200 || res.status === 202) {
+                setLoggedIn(true);
+                res.json().then(res => setUser(res.user));
+                setPending(false);
+            } else {
+                res.json().then(res => {
+                    if (res.error) setError(res.error);
+                    else setError('An unknown error occurred! Please try again later.');
+                });
+                setLoggedIn(false);
+                setPending(false);
+            }
             setPending(false);
         });
     }
@@ -57,10 +69,14 @@ const Login = () => {
                 <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                     <LockIcon />
                 </Avatar>
+
                 <Typography component="h1" variant="h5">
                     {t("SIGN_IN")}
                 </Typography>
+
                 <Box component="form" onSubmit={ handleLoginAttempt } noValidate sx={{ mt: 1 }}>
+                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ error }` }</Alert> }
+                    
                     <TextField
                         margin="normal"
                         required
@@ -92,8 +108,10 @@ const Login = () => {
                         type="submit"
                         fullWidth
                         variant="contained"
+                        disabled={ pending }
                         sx={{ mt: 3, mb: 2 }}
                     >
+                        { pending && <CircularProgress /> }
                         {t("SIGN_IN")}
                     </Button>
 

@@ -6,7 +6,7 @@ import { UserContext } from '../../context/UserContext';
 
 const UserProfile = () => {
     // Get user-specific states from global user context.
-    const { loggedIn, user } = useContext(UserContext);
+    const { loggedIn, user, setLoggedIn, setUser } = useContext(UserContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
   
@@ -16,6 +16,18 @@ const UserProfile = () => {
   
     const handleClose = () => {
       setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        fetch('/logout/')
+        .then(res => {
+            if(res.status === 200) {
+                setLoggedIn(false);
+                setUser({});
+            } else {
+                alert('An error occurred! Please try again later.');
+            }
+        });
     };
 
     // Return "Sign in" button if user is not signed in.
@@ -66,8 +78,7 @@ const UserProfile = () => {
                 
                 <Divider />
 
-                {/* TODO: Make logout work. */}
-                <MenuItem onClick={ handleClose }>
+                <MenuItem onClick={ handleLogout }>
                     <ListItemIcon>
                         <Logout />
                     </ListItemIcon>

@@ -7,15 +7,14 @@ export const UserProvider = ({ children }) => {
     // Whether or not the user is logged in.
     const [loggedIn, setLoggedIn] = useState(false);
     // Whether or not the login request is already done.
-    const [pending, setPending] = useState(true);
+    const [pending, setPending] = useState(false);
     // User object returned by the /login/ API.
     const [user, setUser] = useState({});
 
     // Check if user is already logged in.
     useEffect(() => {
-        // Login data as FormData.
-        // var formData = new FormData();
-
+        setPending(true);
+        
         fetch('/login/', {
             method: 'POST',
             credentials: 'include'
@@ -25,8 +24,10 @@ export const UserProvider = ({ children }) => {
                 setLoggedIn(true);
                 // Parse response and save user object in state.
                 res.json().then(res => setUser(res.user));
+                setPending(false);
             } else {
                 setLoggedIn(false);
+                setPending(false);
             }
 
             setPending(false); 
