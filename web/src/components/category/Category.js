@@ -1,5 +1,6 @@
 import { Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import React from 'react';
+import {t} from "i18next";
 
 const Category = ({ data }) => {
     return (
@@ -7,14 +8,14 @@ const Category = ({ data }) => {
             <Card className="category">
                 <CardContent>
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Kategorie
+                        {t("CATEGORY")}
                     </Typography>
                     
                     <Typography variant="h5">{ data.name }</Typography>
 
                 </CardContent>
                 <CardActions>
-                    <Button size="small">Ansehen</Button>
+                    <Button size="small">{t("VIEW")}</Button>
                 </CardActions>
             </Card>
         </Grid>

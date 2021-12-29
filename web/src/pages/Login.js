@@ -4,6 +4,8 @@ import React, { useContext } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
 import { Navigate } from 'react-router-dom';
+import {t} from "i18next";
+
 
 /**
  * Login component.
@@ -56,7 +58,7 @@ const Login = () => {
                     <LockIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign in
+                    {t("SIGN_IN")}
                 </Typography>
                 <Box component="form" onSubmit={ handleLoginAttempt } noValidate sx={{ mt: 1 }}>
                     <TextField
@@ -64,7 +66,7 @@ const Login = () => {
                         required
                         fullWidth
                         id="email"
-                        label="Email Address"
+                        label={t("EMAIL_ADDRESS")}
                         name="email"
                         autoComplete="email"
                         autoFocus
@@ -75,7 +77,7 @@ const Login = () => {
                         required
                         fullWidth
                         name="password"
-                        label="Password"
+                        label={t("PASSWORD")}
                         type="password"
                         id="password"
                         autoComplete="current-password"
@@ -92,18 +94,18 @@ const Login = () => {
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
                     >
-                    Sign In
+                        {t("SIGN_IN")}
                     </Button>
 
                     <Grid container>
                         <Grid item xs>
                             <Link href="#" variant="body2">
-                            Forgot password?
+                                {t("FORGOT_PASSWORD")}
                             </Link>
                         </Grid>
                         <Grid item>
                             <Link href="#" variant="body2">
-                            {"Don't have an account? Sign Up"}
+                            {t("DONT_HAVE_ACC_SIGN_UP")}
                             </Link>
                         </Grid>
                     </Grid>
