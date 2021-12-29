@@ -1,9 +1,6 @@
-from flask import render_template, redirect, url_for
-from flask_login import current_user, login_required
 from flask_scss import Scss
 
 import globals
-from crossdomain import crossdomain
 from globals import app
 from routes import user
 from routes.api_create import api_create
@@ -12,7 +9,7 @@ from routes.api_moderate import api_moderate
 from routes.permissions import api_permissions
 from statics import config, init
 
-app.testing = True
+app.config["environment"] = "development"
 
 init.init_db()
 
@@ -38,9 +35,9 @@ def add_header(r):
     return r
 
 
-if __name__ == "__main__":
-    Scss(app, static_dir="public/materialize", asset_dir="sass/materialize", load_paths=["sass/materialize/components", "sass/materialize/components/forms"])
+Scss(app, static_dir="public/materialize", asset_dir="sass/materialize", load_paths=["sass/materialize/components", "sass/materialize/components/forms"])
 
+if __name__ == "__main__":
     try:
         app.run("0.0.0.0", config.port)
     except KeyboardInterrupt:
