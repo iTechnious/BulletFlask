@@ -58,8 +58,8 @@ def get_content():
     ################## PARSE SQLA OBJECTS TO JSON ##################
     return jsonify(
         {
-            "current": {c.name: str(getattr(current, c.name)) for c in current.__table__.columns},
-            "contents": [{c.name: str(getattr(x, c.name)) for c in x.__table__.columns if c.name in ["id", "type", "name"]} for x in content]
+            "current": {c.name: getattr(current, c.name) for c in current.__table__.columns},
+            "contents": [{c.name: getattr(x, c.name) for c in x.__table__.columns if c.name in ["id", "type", "name"]} for x in content]
          }
     )
 
