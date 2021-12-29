@@ -4,12 +4,18 @@ import reportWebVitals from './reportWebVitals';
 import "./index.css";
 import { UserProvider } from './context/UserContext';
 import Router from './Router';
+import { Suspense } from 'react';
+
+import './i18n';
+
 
 ReactDOM.render(
   <React.StrictMode>
-      <UserProvider>
-        <Router />
-      </UserProvider>
+      <Suspense fallback={<span>Loading...</span>}>
+          <UserProvider>
+            <Router />
+          </UserProvider>
+      </Suspense>
   </React.StrictMode>,
   document.getElementById('root')
 );

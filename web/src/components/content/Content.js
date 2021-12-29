@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Thread from '../thread/Thread';
 import Category from '../category/Category';
 import { Grid, Typography } from '@mui/material';
+import {t} from "i18next";
 
 const Content = ({ data }) => {
     const [threads, setThreads] = useState([]);
@@ -32,7 +33,7 @@ const Content = ({ data }) => {
 
     return (
         <>
-        <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>Kategorien</Typography>
+        <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography>
         
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 {
@@ -41,7 +42,7 @@ const Content = ({ data }) => {
                 }
         </Grid>
 
-        <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>Threads</Typography>
+        <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("THREADS")}</Typography>
 
         {
             // Render all threads.
