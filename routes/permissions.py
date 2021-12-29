@@ -5,8 +5,8 @@ from flask import Blueprint, request
 from flask_login import login_required, current_user
 
 from crossdomain import crossdomain
-from globals import connection_pool, app
-from statics import config
+from globals import app
+from statics import db
 from statics.helpers import permissions_checker
 
 api_permissions = Blueprint("api_permissions", __name__)
@@ -19,20 +19,23 @@ def user_add_group():
         return flask.abort(flask.Response(status=401, response="You are not permitted to do that."))
 
     data = request.args
-    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-        cursor.execute(f"SELECT `groups` FROM {config.Instance.user_instance}_users WHERE `id`='{data['id']}'")
-        res = cursor.fetchone()["groups"]
-        old_groups = ast.literal_eval(res)
-        groups = old_groups
+    session = db.factory()
 
-        try:
-            groups.append(int(data["group"]))
-        except TypeError:
-            return flask.abort(flask.Response(response="'group' must be the group id", status=400))
+    res = session.query(db.User).filter_by(id=data["id"]).first()
+    old_groups = ast.literal_eval(res.groups)
+    groups = old_groups
 
-        print(old_groups, groups)
+    try:
+        groups.append(int(data["group"]))
+    except TypeError:
+        return flask.abort(flask.Response(response="'group' must be the group id", status=400))
 
-        cursor.execute(f"UPDATE {config.Instance.user_instance}_users SET `groups`='[{', '.join(groups)}]' WHERE `id`='{data['id']}'")
+    print(old_groups, groups)
+
+    session.query(db.Users).filter_by(id=data["data"]).first().groups = f"[{', '.join(groups)}]"
+
+    session.commit()
+    session.close()
 
     return {"old_data": old_groups, "new_data": groups}
 
@@ -45,19 +48,22 @@ def user_remove_group():
         return flask.abort(flask.Response(status=401, response="You are not permitted to do that."))
 
     data = request.args
-    with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-        cursor.execute(f"SELECT `groups` FROM {config.Instance.user_instance}_users WHERE `id`='{data['id']}'")
-        res = cursor.fetchone()["groups"]
-        old_groups = ast.literal_eval(res)
-        groups = old_groups
+    session = db.factory()
 
-        try:
-            groups.remove(int(data["group"]))
-        except (TypeError, ValueError):
-            return flask.abort(flask.Response(response="'group' must be the group id", status=400))
+    res = session.query(db.Users).filter_by(id=data["id"]).first()
+    old_groups = ast.literal_eval(res.groups)
+    groups = old_groups
 
-        print(old_groups, groups)
+    try:
+        groups.remove(int(data["group"]))
+    except (TypeError, ValueError):
+        return flask.abort(flask.Response(response="'group' must be the group id", status=400))
 
-        cursor.execute(f"UPDATE {config.Instance.user_instance}_users SET `groups`='[{', '.join(groups)}]' WHERE `id`='{data['id']}'")
+    print(old_groups, groups)
+
+    session.query(db.Users).filter_by(id=data["id"]).first().groups = f"[{', '.join(groups)}]"
+
+    session.commit()
+    session.close()
 
     return {"old_data": old_groups, "new_data": groups}

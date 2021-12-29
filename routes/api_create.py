@@ -1,12 +1,12 @@
 import json
 
-import flask
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 
 from crossdomain import crossdomain
-from globals import connection_pool, app
+from globals import app
 from statics import config
+from statics import db
 from statics.helpers import permissions_checker
 
 api_create = Blueprint("api_create", __name__)
@@ -26,26 +26,10 @@ def create_content():
     elif permission:
         data = {"name": request.args["name"], "location": request.args["location"], "type": request.args["type"]}
 
-        with connection_pool.connection() as con, con.cursor(dictionary=True) as cursor:
-            # ---------------------- category gets created ----------------------
-            if request.args["type"] == "category":
-                cursor.execute(f"""INSERT INTO {config.Instance.instance}_content (name, location, type, permissions) VALUES ('{data['name']}', '{data['location']}', '{data['type']}', '{json.dumps({current_user.email: 'all'})}')""")
-            # ---------------------- thread gets created ----------------------
-            elif request.args["type"] == "thread":
-                data["content"] = request.args["content"]
-
-                default_permissions = '{"%s": "all"}' % current_user.email
-                query = (data['name'], data['location'], data['type'], data["content"], default_permissions)
-                print("inserting data: ", query)
-                cursor.execute(f"INSERT INTO `{config.Instance.instance}_content` (name, location, type, content, permissions) VALUES (%s, %s, %s, %s, %s)", query)
-            else:
-                return {"error": "Unknown Type"}, 400
-
-            dest = str(cursor.lastrowid)  # get destination to redirect the client to
-            print(dest)
-
-            con.commit()
-            con.close()
+        session = db.factory()
+        session.add(db.Content(name=data["name"], location=data["location"], type=data["type"], permissions={current_user.email: 'all'}))
+        session.commit()
+        session.close()
 
         return {"message": "success"}, 201
     else:

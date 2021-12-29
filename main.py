@@ -1,6 +1,5 @@
 from flask_scss import Scss
 
-import globals
 from globals import app
 from routes import user
 from routes.api_create import api_create
@@ -38,7 +37,4 @@ def add_header(r):
 Scss(app, static_dir="public/materialize", asset_dir="sass/materialize", load_paths=["sass/materialize/components", "sass/materialize/components/forms"])
 
 if __name__ == "__main__":
-    try:
-        app.run("0.0.0.0", config.port)
-    except KeyboardInterrupt:
-        globals.connection_pool.close()
+    app.run("0.0.0.0", config.port)
