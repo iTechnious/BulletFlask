@@ -1,12 +1,12 @@
-import { AccountCircle } from '@mui/icons-material';
-import { Button, IconButton, Link, Menu, MenuItem } from '@mui/material';
+import { AccountCircle, Logout } from '@mui/icons-material';
+import { Button, Divider, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
 import { t } from 'i18next';
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../../context/UserContext';
 
 const UserProfile = () => {
     // Get user-specific states from global user context.
-    const { loggedIn } = useContext(UserContext);
+    const { loggedIn, user } = useContext(UserContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
   
@@ -38,7 +38,7 @@ const UserProfile = () => {
             </IconButton>
             <Menu
                 id="menu-appbar"
-                anchorEl={anchorEl}
+                anchorEl={ anchorEl }
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
@@ -48,12 +48,32 @@ const UserProfile = () => {
                     vertical: 'top',
                     horizontal: 'right',
                 }}
-                open={Boolean(anchorEl)}
+                open={ Boolean(anchorEl) }
                 onClose={ handleClose }
+                PaperProps={{  
+                    style: {  
+                      width: 200,  
+                    },
+                }}
             >
-                <MenuItem onClick={ handleClose }>{ t('PROFILE') }</MenuItem>
+                <MenuItem onClick={ handleClose }>
+                    <ListItemIcon>
+                        <AccountCircle />
+                    </ListItemIcon>
+                    
+                    <ListItemText>{ user.username }</ListItemText>
+                </MenuItem>
+                
+                <Divider />
+
                 {/* TODO: Make logout work. */}
-                <MenuItem onClick={ handleClose }>{ t('SIGN_OUT') }</MenuItem>
+                <MenuItem onClick={ handleClose }>
+                    <ListItemIcon>
+                        <Logout />
+                    </ListItemIcon>
+                    
+                    <ListItemText>{ t('SIGN_OUT') }</ListItemText>
+                </MenuItem>
             </Menu>
       </div>
     );
