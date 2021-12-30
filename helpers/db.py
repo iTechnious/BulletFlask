@@ -1,6 +1,6 @@
 import sqlalchemy.ext.declarative
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, TEXT, DateTime, Enum, JSON
+from sqlalchemy import Column, Integer, String, TEXT, DateTime, JSON
 from sqlalchemy.orm import sessionmaker
 
 from routes.user import User

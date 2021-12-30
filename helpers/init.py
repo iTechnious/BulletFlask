@@ -2,8 +2,8 @@ import sys
 
 import pymysql
 
+from helpers import db
 from statics import config as conf
-from statics import db
 
 
 def init_db():

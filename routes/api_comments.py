@@ -1,12 +1,10 @@
-import json
-
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 
+import helpers.permissions
 from crossdomain import crossdomain
 from globals import app
-from statics import db
-from statics.helpers import permissions_checker
+from helpers import db
 
 api_moderate = Blueprint("api_comment", __name__)
 
@@ -17,7 +15,7 @@ def comment():
     content_id = request.args["id"]
     content = request.args["content"]
 
-    if permissions_checker(current_user, "interact", "comment", content_id):
+    if helpers.permissions.permission_check(current_user, content_id, "interact", "comment"):
         session = db.factory()
         old = session.query(db.Content).filter_by(id=content_id)[0]
 

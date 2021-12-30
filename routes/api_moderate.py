@@ -3,10 +3,10 @@ import datetime
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 
+import helpers.permissions
 from crossdomain import crossdomain
 from globals import app, cut_objects
-from statics import db
-from statics.helpers import permissions_checker
+from helpers import db
 
 api_moderate = Blueprint("api_moderate", __name__)
 
@@ -19,7 +19,7 @@ def delete_content():
     if int(content_id) == 0:
         return {"message": "Hey! You are doing that wrong! Don't delete the forum root please...",  "error": "id 0 not deleteable"}, 406
 
-    if permissions_checker(current_user, "moderate", "delete", content_id):
+    if helpers.permissions.permission_check(current_user, content_id, "moderate", "delete"):
         session = db.factory()
 
         parent_id = session.query(db.Content).filter_by(id=content_id).first()
@@ -44,7 +44,7 @@ def cut_content():
     if int(content_id) == 0:
         return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",  "error": "id 0 not moveable"}, 406
 
-    if permissions_checker(current_user, "moderate", "move", content_id):
+    if helpers.permissions.permission_check(current_user, content_id, "moderate", "move"):
         cut_objects[current_user.email] = content_id
 
         return {"message": "success", "redirect": content_id}, 200
@@ -70,7 +70,7 @@ def paste_content():
 
     content_type = session.query(db.Content).filter_by(id=content_id).first()["type"]
 
-    if permissions_checker(current_user, "create", content_type, target_id):
+    if helpers.permissions.permission_check(current_user, target_id, "create", content_type):
         session.query(db.Content).filter_by(id=content_id).first().location = target_id
 
         session.commit()
@@ -93,7 +93,7 @@ def edit():
     else:
         new_content = None
 
-    if not permissions_checker(current_user, "moderate", "edit", content_id):
+    if not helpers.permissions.permission_check(current_user, content_id, "moderate", "edit"):
         return {"error": "missing permissions"}, 403
 
     session = db.factory()

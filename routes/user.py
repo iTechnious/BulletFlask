@@ -26,7 +26,7 @@ class User(db.Model, UserMixin):
 
 from crossdomain import crossdomain
 from globals import app
-from statics.forms import LoginForm, RegisterForm
+from helpers.forms import LoginForm, RegisterForm
 
 user_management = Blueprint("user", __name__)
 

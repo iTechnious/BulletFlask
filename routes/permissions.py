@@ -4,10 +4,10 @@ import flask
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 
+import helpers.permissions
 from crossdomain import crossdomain
 from globals import app
-from statics import db
-from statics.helpers import permissions_checker
+from helpers import db
 
 api_permissions = Blueprint("api_permissions", __name__)
 
@@ -15,7 +15,7 @@ api_permissions = Blueprint("api_permissions", __name__)
 @api_permissions.route("/api/permission/user_add_group/")
 @login_required
 def user_add_group():
-    if not permissions_checker(current_user, "groups", "add"):
+    if not helpers.permissions.permission_check(current_user, 0, "groups", "add"):
         return flask.abort(flask.Response(status=401, response="You are not permitted to do that."))
 
     data = request.args
@@ -44,7 +44,7 @@ def user_add_group():
 @api_permissions.route("/api/permission/user_remove_group/")
 @login_required
 def user_remove_group():
-    if not permissions_checker(current_user, "groups", "remove"):
+    if not helpers.permissions.permission_check(current_user, 0, "groups", "remove"):
         return flask.abort(flask.Response(status=401, response="You are not permitted to do that."))
 
     data = request.args

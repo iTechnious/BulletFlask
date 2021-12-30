@@ -1,13 +1,11 @@
-import json
-
 import flask
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 
+import helpers.permissions
 from crossdomain import crossdomain
 from globals import app
-from statics import db
-from statics.helpers import permissions_checker
+from helpers import db
 
 api_get = Blueprint("api_get", __name__)
 
@@ -23,7 +21,7 @@ def get_content():
     if res is None:
         return flask.abort(flask.Response(response="Location not found", status=404))
 
-    if not permissions_checker(current_user, "view", "all", location):
+    if not helpers.permissions.permission_check(current_user, location, "view", "all"):
         return flask.abort(flask.Response(response="No permission to view this location", status=906))
 
     content = session.query(db.Content).filter_by(location=location).all()
@@ -85,7 +83,7 @@ def breadcrumb():
 def versions():
     location = request.args["location"]
 
-    if not permissions_checker(current_user, "view", "all", location):
+    if not helpers.permissions.permission_check(current_user, location, "view", "all"):
         return {"error": "missing permissions"}, 403
 
     session = db.factory()

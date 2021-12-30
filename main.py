@@ -1,12 +1,13 @@
 from flask_scss import Scss
 
 from globals import app
+from helpers import init
 from routes import user
 from routes.api_create import api_create
 from routes.api_get import api_get
 from routes.api_moderate import api_moderate
 from routes.permissions import api_permissions
-from statics import config, init
+from statics import config
 
 app.config["environment"] = "development"
 

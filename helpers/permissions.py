@@ -1,6 +1,6 @@
 from contextlib import suppress
 
-from statics import db
+from helpers import db
 
 
 def permission_merger(permission_set: list):
@@ -39,6 +39,10 @@ def group_permission_getter(user):
 def user_element_permission_getter(user, element):
     session = db.factory()
     element = session.query(db.Content).filter_by(id=element).first()
+    while element.permissions == {}:
+        if element.location is None:
+            break
+        element = session.query(db.Content).filter_by(id=element.location).first()
 
     ele_permissions = element.permissions
     session.close()
@@ -51,6 +55,10 @@ def user_element_permission_getter(user, element):
 def group_element_permission_getter(user, element):
     session = db.factory()
     element = session.query(db.Content).filter_by(id=element).first()
+    while element.permissions == {}:
+        if element.location is None:
+            break
+        element = session.query(db.Content).filter_by(id=element.location).first()
 
     group_ids = [x for x in element.permissions.keys() if x in [str(y) for y in user.groups]]
 

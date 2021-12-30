@@ -1,13 +1,11 @@
-import json
-
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 
+import helpers.permissions
 from crossdomain import crossdomain
 from globals import app
+from helpers import db
 from statics import config
-from statics import db
-from statics.helpers import permissions_checker
 
 api_create = Blueprint("api_create", __name__)
 
@@ -19,7 +17,7 @@ def create_content():
     if not request.args["type"] in config.known_types:
         return {"error": "Unknown type"}, 400
 
-    permission = permissions_checker(current_user, "create", request.args["type"], request.args["location"])
+    permission = helpers.permissions.permission_check(current_user, request.args["location"], "create", request.args["type"])
     if not permission:
         return {"error": "missing permissions"}, 403
 
