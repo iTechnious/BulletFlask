@@ -1,4 +1,25 @@
+from contextlib import suppress
+
 from statics import db
+
+
+def permission_merger(permission_set: list):
+    permissions = {}
+    for set in permission_set:
+        for key in set.keys():
+            if set[key] == "all":
+                permissions[key] = "all"
+            ######### Check if all already there #########
+            if key not in permissions.keys():
+                permissions[key] = set[key]
+            else:
+                if type(permissions[key]) == list:
+                    for x in set[key]:
+                        permissions[key].append(x)
+                elif permissions[key] != "all":
+                    permissions[key] = set[key]
+
+    return permissions
 
 def group_permission_getter(user):
     session = db.factory()
@@ -13,23 +34,7 @@ def group_permission_getter(user):
         group = session.query(db.Groups).filter_by(id=group_id).first()
         groups.append(group.permissions)
 
-    permissions = {}
-
-    for group in groups:
-        for key in group.keys():
-            if group[key] == "all":
-                permissions[key] = "all"
-            ######### Check if all already there #########
-            if key not in permissions.keys():
-                permissions[key] = group[key]
-            else:
-                if type(permissions[key]) == list:
-                    for x in group[key]:
-                        permissions[key].append(x)
-                elif permissions[key] != "all":
-                    permissions[key] = group[key]
-
-    return permissions
+    return permission_merger(groups)
 
 def user_element_permission_getter(user, element):
     session = db.factory()
@@ -53,26 +58,51 @@ def group_element_permission_getter(user, element):
     for group_id in group_ids:
         groups.append(element.permissions[group_id])
 
-    permissions = {}
+    return permission_merger(groups)
 
-    for group in groups:
-        for key in group.keys():
-            if group[key] == "all":
-                permissions[key] = "all"
-            ######### Check if all already there #########
-            if key not in permissions.keys():
-                permissions[key] = group[key]
-            else:
-                if type(permissions[key]) == list:
-                    for x in group[key]:
-                        permissions[key].append(x)
-                elif permissions[key] != "all":
-                    permissions[key] = group[key]
+def element_revoke_getter(user, element):
+    session = db.factory()
+    element = session.query(db.Content).filter_by(id=element).first()
+
+    revokes = []
+    for key in element.deny:
+        if key in [str(x) for x in user.groups] or key == user.email:
+            revokes.append(element.deny[key])
+
+    return permission_merger(revokes)
+
+def permission_revoker(permissions: dict, denies: dict):
+    for key in denies.keys():
+        if denies[key] == "all":
+            with suppress(KeyError): del permissions[key]
+        elif type(denies[key]) == list:
+            if key in permissions.keys() and permissions[key] == "all":
+                print(f"WARNING: permissions for {key} could not be parsed correctly!"
+                      f"Permissions of type 'all' cannot by denied and were thus removed from this query.")
+                del permissions[key]
+            elif type(permissions[key]) == list:
+                for item in denies[key]:
+                    with suppress(KeyError): permissions[key].remove(item)
 
     return permissions
 
-s = db.factory()
-user = s.query(db.User).filter_by(email="sonke@itechnious.com").first()
+def permission_getter(user, element):
+    permissions = [
+        group_permission_getter(user),
+        user_element_permission_getter(user, element),
+        group_element_permission_getter(user, element),
+    ]
+    permissions = permission_merger(permissions)
+    permissions = permission_revoker(permissions, element_revoke_getter(user, element))
 
+    return permissions
 
-print(group_element_permission_getter(user, 0))
+def permission_check(user, element, group, action):
+    permissions = permission_getter(user, element)
+    if group in permissions.keys():
+        if permissions[group] == "all":
+            return True
+        elif type(permissions[group]) == list:
+            if action in permissions[group]:
+                return True
+    return False
