@@ -93,10 +93,10 @@ def login():
 
                 return {"message": "Success!", "user": {"username": user.username}}, 200
             else:
-                return {"error": "wrong password"}, 401
+                return {"error": "wrong password", "frontend": "WRONG_PASSWORD"}, 401
 
         else:
-            return {"error": "User not found."}, 404
+            return {"error": "user not found", "frontend": "USER_NOT_FOUND"}, 404
 
     return {"message": "submit login data via form-data", "error": "no form recieved"}, 400
 

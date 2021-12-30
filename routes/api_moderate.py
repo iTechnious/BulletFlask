@@ -17,7 +17,8 @@ def delete_content():
     content_id = request.args["id"]
 
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't delete the forum root please...",  "error": "id 0 not deleteable"}, 406
+        return {"message": "Hey! You are doing that wrong! Don't delete the forum root please...",
+                "error": "id 0 not deleteable", "frontend": "ID_0_NOT_EDITABLE"}, 406
 
     if helpers.permissions.permission_check(current_user, content_id, "moderate", "delete"):
         session = db.factory()
@@ -42,7 +43,8 @@ def cut_content():
     content_id = request.args["id"]
 
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",  "error": "id 0 not moveable"}, 406
+        return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",
+                "error": "id 0 not moveable", "frontend": "ID_0_NOT_EDITABLE"}, 406
 
     if helpers.permissions.permission_check(current_user, content_id, "moderate", "move"):
         cut_objects[current_user.email] = content_id
@@ -64,7 +66,8 @@ def paste_content():
     content_id = cut_objects[current_user.email]
 
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",  "error": "id 0 not moveable"}, 406
+        return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",
+                "error": "id 0 not moveable", "frontend": "ID_0_NOT_EDITABLE"}, 406
 
     session = db.factory()
 
@@ -87,6 +90,10 @@ def paste_content():
 @login_required
 def edit():
     content_id = request.args["id"]
+    if int(content_id) == 0:
+        return {"message": "Hey! You are doing that wrong! Don't edit the forum root please...",
+                "error": "id 0 not editable", "frontend": "ID_0_NOT_EDITABLE"}, 406
+
     new_name = request.args["name"]
     if "content" in request.args.keys():
         new_content = request.args["content"]

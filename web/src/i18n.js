@@ -15,7 +15,7 @@ i18n
     },
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
-    ns: ['translations'],
+    ns: ['translations', 'errors'],
     defaultNS: 'translations',
     keySeparator: false,
     interpolation: {

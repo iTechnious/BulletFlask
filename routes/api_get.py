@@ -69,13 +69,14 @@ def breadcrumb():
     session = db.factory()
 
     res = session.query(db.Content).filter_by(id=request.args["location"]).first()
-    data.append(res)
-    while res["id"] != 0:
-        res = session.query(db.Content).filter_by(id=res["location"]).first()
-        data.append(res)
+    data.append({c.name: getattr(res, c.name) for c in res.__table__.columns if c.name in ["id", "name", "location"]})
+    while res.id != 0:
+        res = session.query(db.Content).filter_by(id=res.location).first()
+        data.append({c.name: getattr(res, c.name) for c in res.__table__.columns if c.name in ["id", "name", "location"]})
 
-    if None in data:
-        data.remove(None)
+    data.reverse()
+
+    return jsonify(data)
 
 @crossdomain(origin="*", current_app=app)
 @api_get.route("/api/content/versions/")

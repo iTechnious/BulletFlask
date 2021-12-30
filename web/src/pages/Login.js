@@ -39,7 +39,7 @@ const Login = () => {
                 setPending(false);
             } else {
                 res.json().then(res => {
-                    if (res.error) setError(res.error);
+                    if (res.error) setError(res);
                     else setError('An unknown error occurred! Please try again later.');
                 });
                 setLoggedIn(false);
@@ -75,7 +75,7 @@ const Login = () => {
                 </Typography>
 
                 <Box component="form" onSubmit={ handleLoginAttempt } noValidate sx={{ mt: 1 }}>
-                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ error }` }</Alert> }
+                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error["frontend"] !== undefined ? error["frontend"] : error["error"], {ns:"errors"}) }` }</Alert> }
                     
                     <TextField
                         margin="normal"
