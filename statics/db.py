@@ -29,6 +29,7 @@ class Content(Base):
     location = Column(Integer)
     type = Column(String(255))
     permissions = Column(JSON, default={})
+    deny = Column(JSON, default={})
     content = Column(TEXT)
 
 class Groups(Base):

@@ -2,6 +2,7 @@ from bcrypt import checkpw, gensalt, hashpw
 from flask import Blueprint
 from flask_login import current_user, login_required, logout_user, LoginManager, UserMixin, login_user
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_utils import ScalarListType
 
 db = SQLAlchemy()
 from statics import config
@@ -15,7 +16,7 @@ class User(db.Model, UserMixin):
     is_authenticated = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
     permissions = db.Column(db.JSON, default={})
-    groups = db.Column(db.ARRAY(db.Integer), default=[])
+    groups = db.Column(ScalarListType(int), default=None)
 
     def get_id(self):
         return self.email
@@ -54,20 +55,24 @@ def user_loader(user_id):
     return user
 
 @crossdomain(origin="*", current_app=app)
+@user_management.route('/login_valid/', methods=['GET', 'POST'])
+def login_valid():
+    if current_user.is_authenticated:
+        return {"message": "signed in", "user": {"username": current_user.username}}, 202
+    else:
+        return {"message": "not signed in"}, 204
+
+@crossdomain(origin="*", current_app=app)
 @user_management.route('/login/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        response = {
-            "message": "Already signed in.",
-            "user": {
-                "username": current_user.username
-            }
-        }
-
-        return response, 202
+        return {"message": "Already signed in.", "user": {"username": current_user.username}}, 202
 
     form = LoginForm()
     if form.is_submitted():
+        if form.email.data is None:
+            return {"error": "no credentials included"}, 400
+
         user = user_loader(form.email.data)
         if user:
             db_pass = "$2b$12$" + "".join(user.password.split("$").pop())
@@ -86,14 +91,7 @@ def login():
                 db.session.add(user)
                 db.session.commit()
 
-                response = {
-                    "message": "Success!",
-                    "user": {
-                        "username": user.username
-                    }
-                }
-
-                return response, 200
+                return {"message": "Success!", "user": {"username": user.username}}, 200
             else:
                 return {"error": "wrong password"}, 401
 
