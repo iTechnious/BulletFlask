@@ -3,7 +3,7 @@ import { Lock as LockIcon } from '@mui/icons-material';
 import React, { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
-import { t } from "i18next";
+import { useTranslation } from 'react-i18next';
 
 
 /**
@@ -15,6 +15,8 @@ import { t } from "i18next";
 const Login = () => {
     // Grab user states from global states.
     const { loggedIn, pending, setLoggedIn, setPending, setUser } = useContext(UserContext);
+
+    const { t } = useTranslation();
 
     // Error/message returned by the API.
     const [error, setError] = useState('');

@@ -1,9 +1,11 @@
 import { Card, CardContent, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { t } from "i18next";
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Category = ({ data }) => {
+    const { t } = useTranslation();
+
     return (
         <Grid item xs={6}>
             <Link to="/" style={{ textDecoration: 'inherit' }}>

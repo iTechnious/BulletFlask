@@ -1,9 +1,11 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import React from 'react';
-import {t} from "i18next";
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 const Thread = ({ data }) => {
+    const { t } = useTranslation();
+    
     return (
         <Link to="/" style={{ textDecoration: 'inherit' }}>
             <Card className="thread" sx={{ padding: '10px', marginTop: '20px' }}>

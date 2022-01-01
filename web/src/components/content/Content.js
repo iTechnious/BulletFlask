@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Thread from '../thread/Thread';
 import Category from '../category/Category';
 import { Grid, Typography } from '@mui/material';
-import {t} from "i18next";
+import { useTranslation } from 'react-i18next';
 
 const Content = ({ data }) => {
     const [threads, setThreads] = useState([]);
     const [categories, setCategories] = useState([]);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         let threadElements = [];
