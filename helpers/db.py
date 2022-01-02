@@ -1,9 +1,9 @@
 import sqlalchemy.ext.declarative
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, TEXT, DateTime, JSON
+from sqlalchemy import Column, Integer, String, TEXT, DateTime, JSON, Boolean
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import ScalarListType
 
-from routes.user import User
 from statics import config
 
 """
@@ -46,5 +46,18 @@ class Versions(Base):
     content = Column(TEXT)
     date = Column(DateTime, nullable=False)
 
-class Users(User, Base, UserMixin):
-    pass
+class Users(Base, UserMixin):
+    __tablename__ = config.Instance.user_instance + "_users"
+    id = Column(Integer, primary_key=True)
+    username = Column(String(255))
+    email = Column(String(255))
+    password = Column(String(255))
+    is_authenticated = Column(Boolean, default=False)
+    is_active = Column(Boolean, default=True)
+    permissions = Column(JSON, default={})
+    groups = Column(ScalarListType(int), default=None)
+
+    def get_id(self):
+        return self.email
+
+    is_anonymous = False

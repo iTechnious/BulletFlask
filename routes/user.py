@@ -2,31 +2,18 @@ from bcrypt import checkpw, gensalt, hashpw
 from flask import Blueprint
 from flask_login import current_user, login_required, logout_user, LoginManager, UserMixin, login_user
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy_utils import ScalarListType
 
-db = SQLAlchemy()
 from statics import config
-
-class User(db.Model, UserMixin):
-    __tablename__ = config.Instance.user_instance + "_users"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    email = db.Column(db.String)
-    password = db.Column(db.String)
-    is_authenticated = db.Column(db.Boolean, default=False)
-    is_active = db.Column(db.Boolean, default=True)
-    permissions = db.Column(db.JSON, default={})
-    groups = db.Column(ScalarListType(int), default=None)
-
-    def get_id(self):
-        return self.email
-
-    is_anonymous = False
-
-
 from crossdomain import crossdomain
 from globals import app
 from helpers.forms import LoginForm, RegisterForm
+from helpers.db import Users
+
+db = SQLAlchemy()
+
+class User(Users, db.Model, UserMixin):
+    pass
+
 
 user_management = Blueprint("user", __name__)
 
@@ -45,7 +32,7 @@ login_manager.login_message = False
 
 @app.errorhandler(401)
 def not_logged_in(e):
-    return {"message": "you are not logged in!", "error": str(e)}, 401
+    return {"error": {"message": "you are not logged in!"}}, 401
 
 
 @login_manager.user_loader
@@ -71,7 +58,7 @@ def login():
     form = LoginForm()
     if form.is_submitted():
         if form.email.data is None:
-            return {"error": "no credentials included"}, 400
+            return {"error": {"message": "no credentials included"}}, 400
 
         user = user_loader(form.email.data)
         if user:
@@ -86,19 +73,19 @@ def login():
                 if login_user(user):
                     user.is_authenticated = True
                 else:
-                    return {"error": "there was a problem loggin you in. is the user active?"}, 403
+                    return {"error": {"message:" "there was a problem loggin you in. is the user active?"}}, 403
 
                 db.session.add(user)
                 db.session.commit()
 
-                return {"message": "Success!", "user": {"username": user.username}}, 200
+                return {"message": "success", "user": {"username": user.username}}, 200
             else:
-                return {"error": {"message": "wrong password", "code": "WRONG_PASSWORD"}}, 401
+                return {"error": {"message": "wrong password", "frontend": "WRONG_PASSWORD"}}, 401
 
         else:
-            return {"error": {"message": "user not found", "code": "USER_NOT_FOUND"}}, 404
+            return {"error": {"message": "user not found", "frontend": "USER_NOT_FOUND"}}, 404
 
-    return {"message": "submit login data via form-data", "error": "no form recieved"}, 400
+    return {"error": {"message": "no form recieved"}}, 400
 
 
 @crossdomain(origin="*", current_app=app)
@@ -120,7 +107,7 @@ def register():
 
     if form.is_submitted():
         if user_loader(form.email.data) is not None:
-            return {"error": "email already taken"}, 409
+            return {"error": {"message": "email already taken", "frontend": "EMAIL_TAKEN"}}, 409
 
         salt = gensalt()
         password = hashpw(bytes(form.password.data, "utf-8"), salt).decode("utf-8")
@@ -134,6 +121,6 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return {"message": "success"}, 200
+        return {"message": "success", "user": {"username": user.username}}, 200
 
-    return {"message": "submit login data via form-data", "error": "no form recieved"}, 400
+    return {"error": {"message": "no form recieved"}}, 400
