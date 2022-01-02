@@ -19,10 +19,10 @@ def get_content():
 
     res = session.query(db.Content).filter_by(id=location).first()
     if res is None:
-        return flask.abort(flask.Response(response="Location not found", status=404))
+        return {"error": {"message": "location not found"}}, 404
 
     if not helpers.permissions.permission_check(current_user, location, "view", "all"):
-        return flask.abort(flask.Response(response="No permission to view this location", status=906))
+        return {"error": {"message": "missing permissions"}}, 403
 
     content = session.query(db.Content).filter_by(location=location).all()
     _current = session.query(db.Content).filter_by(id=location).first()
@@ -40,14 +40,14 @@ def get_content():
         return content
 
     if content == False:  # do NOT change to if not content!
-        return {"error": "location not found"}, 404
+        return {"error": {"message": "location not found"}}, 404
 
     ################## UPDATING CONTENT IF VERSION ID IS SPECIFIED ##################
     if "version" in request.args.keys():
         version = session.query(db.Versions).filter_by(id=request.args["verions"]).first()
 
         if str(current["id"]) != str(version["content_id"]):
-            return {"error": "version ID not found for this post!"}, 409
+            return {"error": {"message": "version id not found for this post!"}}, 409
         current["name"] = version["name"]
         current["content"] = version["content"]
 
@@ -85,7 +85,7 @@ def versions():
     location = request.args["location"]
 
     if not helpers.permissions.permission_check(current_user, location, "view", "all"):
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
 
     session = db.factory()
 

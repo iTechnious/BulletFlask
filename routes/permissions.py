@@ -16,7 +16,7 @@ api_permissions = Blueprint("api_permissions", __name__)
 @login_required
 def user_add_group():
     if not helpers.permissions.permission_check(current_user, 0, "groups", "add"):
-        return flask.abort(flask.Response(status=401, response="You are not permitted to do that."))
+        return {"error": {"message": "missing permissions"}}, 403
 
     data = request.args
     session = db.factory()
@@ -28,7 +28,7 @@ def user_add_group():
     try:
         groups.append(int(data["group"]))
     except TypeError:
-        return flask.abort(flask.Response(response="'group' must be the group id", status=400))
+        return {"error": {"message": "'group' must be the group id"}}, 400
 
     print(old_groups, groups)
 
@@ -45,7 +45,7 @@ def user_add_group():
 @login_required
 def user_remove_group():
     if not helpers.permissions.permission_check(current_user, 0, "groups", "remove"):
-        return flask.abort(flask.Response(status=401, response="You are not permitted to do that."))
+        return {"error": {"message": "missing permissions"}}, 403
 
     data = request.args
     session = db.factory()
@@ -57,7 +57,7 @@ def user_remove_group():
     try:
         groups.remove(int(data["group"]))
     except (TypeError, ValueError):
-        return flask.abort(flask.Response(response="'group' must be the group id", status=400))
+        return {"error": {"message": "'group' must be the group id"}}, 400
 
     print(old_groups, groups)
 

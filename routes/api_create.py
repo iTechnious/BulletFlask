@@ -15,11 +15,11 @@ api_create = Blueprint("api_create", __name__)
 @login_required
 def create_content():
     if not request.args["type"] in config.known_types:
-        return {"error": "Unknown type"}, 400
+        return {"error": {"message": "unknown type"}}, 400
 
     permission = helpers.permissions.permission_check(current_user, request.args["location"], "create", request.args["type"])
     if not permission:
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
 
     elif permission:
         data = {"name": request.args["name"], "location": request.args["location"], "type": request.args["type"]}

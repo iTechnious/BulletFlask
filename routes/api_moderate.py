@@ -17,8 +17,7 @@ def delete_content():
     content_id = request.args["id"]
 
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't delete the forum root please...",
-                "error": "id 0 not deleteable", "frontend": "ID_0_NOT_EDITABLE"}, 406
+        return {"error": {"message": "id 0 not deleteable", "frontend": "ID_0_NOT_EDITABLE"}}, 406
 
     if helpers.permissions.permission_check(current_user, content_id, "moderate", "delete"):
         session = db.factory()
@@ -33,7 +32,7 @@ def delete_content():
         return {"message": "success", "redirect": parent_id}, 200
 
     else:
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
 
 
 @crossdomain(origin="*", current_app=app)
@@ -43,8 +42,7 @@ def cut_content():
     content_id = request.args["id"]
 
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",
-                "error": "id 0 not moveable", "frontend": "ID_0_NOT_EDITABLE"}, 406
+        return {"error": {"message": "id 0 not moveable", "frontend": "ID_0_NOT_EDITABLE"}}, 406
 
     if helpers.permissions.permission_check(current_user, content_id, "moderate", "move"):
         cut_objects[current_user.email] = content_id
@@ -52,7 +50,7 @@ def cut_content():
         return {"message": "success", "redirect": content_id}, 200
 
     else:
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
 
 @crossdomain(origin="*", current_app=app)
 @api_moderate.route("/api/content/moderate/paste/")
@@ -61,13 +59,12 @@ def paste_content():
     target_id = request.args["target"]
 
     if current_user.email not in cut_objects.keys():
-        return {"error": "no element cut"}, 412
+        return {"error": {"message": "no element cut"}}, 412
 
     content_id = cut_objects[current_user.email]
 
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't move the forum root please...",
-                "error": "id 0 not moveable", "frontend": "ID_0_NOT_EDITABLE"}, 406
+        return {"error": {"message": "id 0 not moveable", "frontend": "ID_0_NOT_EDITABLE"}}, 406
 
     session = db.factory()
 
@@ -83,7 +80,7 @@ def paste_content():
 
         return {"message": "success", "redirect": content_id}, 200
     else:
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
 
 @crossdomain(origin="*", current_app=app)
 @api_moderate.route("/api/content/moderate/edit/")
@@ -91,8 +88,7 @@ def paste_content():
 def edit():
     content_id = request.args["id"]
     if int(content_id) == 0:
-        return {"message": "Hey! You are doing that wrong! Don't edit the forum root please...",
-                "error": "id 0 not editable", "frontend": "ID_0_NOT_EDITABLE"}, 406
+        return {"error": {"message": "id 0 not editable", "frontend": "ID_0_NOT_EDITABLE"}}, 406
 
     new_name = request.args["name"]
     if "content" in request.args.keys():
@@ -101,7 +97,7 @@ def edit():
         new_content = None
 
     if not helpers.permissions.permission_check(current_user, content_id, "moderate", "edit"):
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
 
     session = db.factory()
 

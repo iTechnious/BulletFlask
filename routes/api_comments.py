@@ -26,4 +26,4 @@ def comment():
         session.commit()
         session.close()
     else:
-        return {"error": "missing permissions"}, 403
+        return {"error": {"message": "missing permissions"}}, 403
