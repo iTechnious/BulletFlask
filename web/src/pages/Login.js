@@ -73,18 +73,18 @@ const Login = () => {
                 </Avatar>
 
                 <Typography component="h1" variant="h5">
-                    {t("SIGN_IN")}
+                    { t('SIGN_IN') }
                 </Typography>
 
                 <Box component="form" onSubmit={ handleLoginAttempt } noValidate sx={{ mt: 1 }}>
-                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ error["frontend"] !== undefined ? t(error["frontend"], {ns:"errors"}) : error.error }` }</Alert> }
+                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error.code, { ns:"errors" }) }` }</Alert> }
                     
                     <TextField
                         margin="normal"
                         required
                         fullWidth
                         id="email"
-                        label={t("EMAIL_ADDRESS")}
+                        label={ t('EMAIL_ADDRESS') }
                         name="email"
                         autoComplete="email"
                         autoFocus
@@ -95,7 +95,7 @@ const Login = () => {
                         required
                         fullWidth
                         name="password"
-                        label={t("PASSWORD")}
+                        label={ t('PASSWORD') }
                         type="password"
                         id="password"
                         autoComplete="current-password"
@@ -114,18 +114,18 @@ const Login = () => {
                         sx={{ mt: 3, mb: 2 }}
                     >
                         { pending && <CircularProgress /> }
-                        {t("SIGN_IN")}
+                        { t('SIGN_IN') }
                     </Button>
 
                     <Grid container>
                         <Grid item xs>
                             <Link href="#" variant="body2">
-                                {t("FORGOT_PASSWORD")}
+                                { t('FORGOT_PASSWORD') }
                             </Link>
                         </Grid>
                         <Grid item>
                             <Link href="#" variant="body2">
-                            {t("DONT_HAVE_ACC_SIGN_UP")}
+                            { t('DONT_HAVE_ACC_SIGN_UP') }
                             </Link>
                         </Grid>
                     </Grid>
