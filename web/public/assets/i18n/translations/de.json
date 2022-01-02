@@ -9,5 +9,7 @@
   "THREAD": "Thread",
   "THREADS": "Threads",
   "SIGN_OUT": "Ausloggen",
-  "ERROR": "Fehler"
+  "ERROR": "Fehler",
+  "SIGN_UP": "Registrieren",
+  "USERNAME": "Nutzername"
 }

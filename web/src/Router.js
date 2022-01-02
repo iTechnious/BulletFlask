@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { UserContext } from './context/UserContext';
 import Login from './pages/Login';
 import Forum from './pages/Forum';
+import Register from './pages/Register';
 
 const Router = () => {
     // Get user-specific states from global user context.
@@ -26,6 +27,12 @@ const Router = () => {
                     element={ loggedIn ? <Navigate replace to="/forum" /> : <Login /> }
                 />
                 
+                <Route
+                    path="/register"
+                    exact
+                    element={ loggedIn ? <Navigate replace to="/forum" /> : <Register /> }
+                />
+
                 <Route
                     path="/"
                     exact

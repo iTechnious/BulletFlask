@@ -4,58 +4,19 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
 
+const Register = () => {
+    const { t } = useTranslation();
 
-/**
- * Login component.
- *
- * Heavily inspired by
- * https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/templates/sign-in/SignIn.js.
- */
-const Login = () => {
     // Grab user states from global states.
     const { loggedIn, pending, setLoggedIn, setPending, setUser } = useContext(UserContext);
 
-    const { t } = useTranslation();
-
     // Error/message returned by the API.
     const [error, setError] = useState('');
-    
-    const handleLoginAttempt = (event) => {
-        // Prevent browser for submission redirect.
-        event.preventDefault();
 
-        // Construct FormData from values in the form.
-        var formData = new FormData(event.currentTarget);
-        
-        // TODO: Remove hard-coded login request and replace with login form.
-        fetch('/login/', {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        })
-        .then(res => {
-            if (res.status === 200 || res.status === 202) {
-                setLoggedIn(true);
-                res.json().then(res => setUser(res.user));
-                setPending(false);
-            } else {
-                res.json().then(res => {
-                    if (res.error) setError(res.error);
-                    else setError('An unknown error occurred! Please try again later.');
-                });
-                setLoggedIn(false);
-                setPending(false);
-            }
-            setPending(false);
-        });
-    }
-    
-    if (loggedIn) {
-        // TODO: Readirect using react-router!!!
-        window.location.replace('/forum');
-    }
+    const handleRegistrationAttempt = () => {
+
+    };
 
     return (
         <>
@@ -74,12 +35,22 @@ const Login = () => {
                 </Avatar>
 
                 <Typography component="h1" variant="h5">
-                    { t('SIGN_IN') }
+                    { t('SIGN_UP') }
                 </Typography>
 
-                <Box component="form" onSubmit={ handleLoginAttempt } noValidate sx={{ mt: 1 }}>
+                <Box component="form" onSubmit={ handleRegistrationAttempt } noValidate sx={{ mt: 1 }}>
                     { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error.code, { ns:"errors" }) }` }</Alert> }
                     
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="username"
+                        label={ t('USERNAME') }
+                        type="text"
+                        id="username"
+                    />
+
                     <TextField
                         margin="normal"
                         required
@@ -115,7 +86,7 @@ const Login = () => {
                         sx={{ mt: 3, mb: 2 }}
                     >
                         { pending && <CircularProgress /> }
-                        { t('SIGN_IN') }
+                        { t('SIGN_UP') }
                     </Button>
 
                     <Grid container>
@@ -125,7 +96,7 @@ const Login = () => {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link component={ RouterLink } to="/register" variant="body2">
+                            <Link href="#" variant="body2">
                             { t('DONT_HAVE_ACC_SIGN_UP') }
                             </Link>
                         </Grid>
@@ -137,4 +108,4 @@ const Login = () => {
     );
 }
 
-export default Login;
+export default Register;
