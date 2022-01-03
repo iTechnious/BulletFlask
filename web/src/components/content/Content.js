@@ -4,11 +4,11 @@ import Category from '../category/Category';
 import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-const Content = ({ data }) => {
+const Content = ({ data, renew }) => {
+    const { t } = useTranslation();
+
     const [threads, setThreads] = useState([]);
     const [categories, setCategories] = useState([]);
-
-    const { t } = useTranslation();
 
     useEffect(() => {
         let threadElements = [];
@@ -20,36 +20,35 @@ const Content = ({ data }) => {
             if (element.type === 'thread') {
                 threadElements.push(element);
             }
-    
+
             // Element is of type category.
             if (element.type === 'category') {
                 categoryElements.push(element);
             }
-
-            // Update states with the processed elements.
-            setThreads(threadElements);
-            setCategories(categoryElements);
         });
-    // eslint-disable-next-line
-    }, []);
+
+        setThreads(threadElements);
+        setCategories(categoryElements);
+    }, [data])
 
     return (
         <>
-        <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography>
-        
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                {
-                    // Render all categories.
-                    categories.map((element, index) => (<Category key={ index } data={ element } />))
-                }
-        </Grid>
+            <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography>
 
-        <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("THREADS")}</Typography>
+            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            {
+                categories.map((element, index) => {
+                    return(<Category key={ index } data={ element } renew={ renew }/>)
+                })
+            }
+            </Grid>
 
-        {
-            // Render all threads.
-            threads.map((element, index) => (<Thread key={ index } data={ element } />))
-        }
+            <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("THREADS")}</Typography>
+
+            {
+                // Render all threads.
+                threads.map((element, index) => { return(<Thread key={ index } data={ element } renew={ renew }/>) })
+            }
         </>
     );
 }

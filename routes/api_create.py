@@ -11,7 +11,7 @@ api_create = Blueprint("api_create", __name__)
 
 
 @crossdomain(origin="*", current_app=app)
-@api_create.route("/api/content/create/", methods=["POST"])
+@api_create.route("/api/content/create/")
 @login_required
 def create_content():
     if not request.args["type"] in config.known_types:

@@ -4,12 +4,15 @@ import Current from '../components/content/Current';
 import Content from '../components/content/Content';
 import '../css/Forum.css';
 import Navbar from '../components/navbar/Navbar';
+import Breadcrumb from "../components/breadcrumb/Breadcrumb";
 
 const Forum = () => {
     // Info about the current element.
     const [current, setCurrent] = useState(null);
     // Content of the current element.
     const [content, setContent] = useState(null);
+    // Breadcrumb data.
+    const [breadcrumb, setBreadcrumb] = useState([]);
 
     const getData = (location) => {
         location = location.toString();
@@ -23,7 +26,15 @@ const Forum = () => {
             setContent(data['contents']);
         })
         .catch(console.log);
-    } 
+
+        fetch('/api/content/breadcrumb/?location=' + location, {
+            credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(data => {
+            setBreadcrumb(data)
+        })
+    }
 
     useEffect(() => {
         getData(0);
@@ -35,9 +46,10 @@ const Forum = () => {
     return (
         <>
             <Navbar />
+            <Breadcrumb data={ breadcrumb } renew={ getData } />
             <Container>
                 <Current data={ current } />
-                <Content data={ content } />
+                <Content data={ content } renew={ getData } />
             </Container>
         </>
     );

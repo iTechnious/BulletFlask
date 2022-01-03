@@ -100,6 +100,8 @@ def permission_getter(user, element):
         user_element_permission_getter(user, element),
         group_element_permission_getter(user, element),
     ]
+    if "all" in permissions:
+        return "all"
     permissions = permission_merger(permissions)
     permissions = permission_revoker(permissions, element_revoke_getter(user, element))
 
@@ -107,6 +109,9 @@ def permission_getter(user, element):
 
 def permission_check(user, element, group, action):
     permissions = permission_getter(user, element)
+    if permissions == "all":
+        return True
+
     if group in permissions.keys():
         if permissions[group] == "all":
             return True
