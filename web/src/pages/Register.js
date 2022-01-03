@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from "react-router-dom";
 
 const Register = () => {
     const { t } = useTranslation();
@@ -39,7 +40,7 @@ const Register = () => {
                 </Typography>
 
                 <Box component="form" onSubmit={ handleRegistrationAttempt } noValidate sx={{ mt: 1 }}>
-                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error.code, { ns:"errors" }) }` }</Alert> }
+                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error["frontend"], { ns:"errors" }) }` }</Alert> }
                     
                     <TextField
                         margin="normal"
@@ -96,8 +97,8 @@ const Register = () => {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link href="#" variant="body2">
-                            { t('DONT_HAVE_ACC_SIGN_UP') }
+                            <Link component={ RouterLink } to="/login" variant="body2">
+                            { t('SIGN_IN') }
                             </Link>
                         </Grid>
                     </Grid>

@@ -1,4 +1,4 @@
-import { Avatar, Button, Checkbox, Link, FormControlLabel, Grid, TextField, Typography, CssBaseline, Container, CircularProgress, Alert } from '@mui/material';
+import { Avatar, Button, Link, Grid, TextField, Typography, CssBaseline, Container, CircularProgress, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
 import React, { useContext, useEffect, useState } from 'react';
 import { Box } from '@mui/system';
@@ -38,11 +38,11 @@ const Login = () => {
         .then(res => {
             if (res.status === 200 || res.status === 202) {
                 setLoggedIn(true);
-                res.json().then(res => setUser(res.user));
+                res.json().then(res => setUser(res["user"]));
                 setPending(false);
             } else {
                 res.json().then(res => {
-                    if (res.error) setError(res.error);
+                    if (res["error"]) setError(res["error"]);
                     else setError('An unknown error occurred! Please try again later.');
                 });
                 setLoggedIn(false);
@@ -78,7 +78,7 @@ const Login = () => {
                 </Typography>
 
                 <Box component="form" onSubmit={ handleLoginAttempt } noValidate sx={{ mt: 1 }}>
-                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error.code, { ns:"errors" }) }` }</Alert> }
+                    { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error["frontend"], { ns:"errors" }) }` }</Alert> }
                     
                     <TextField
                         margin="normal"
@@ -100,11 +100,6 @@ const Login = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                    />
-
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
                     />
 
                     <Button
