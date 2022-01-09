@@ -11,5 +11,6 @@
   "SIGN_OUT": "Sign out",
   "ERROR": "Error",
   "SIGN_UP": "Sign up",
-  "USERNAME": "Username"
+  "USERNAME": "Username",
+  "LOGIN_SUCCEEDED": "Login succeeded!"
 }

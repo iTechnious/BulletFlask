@@ -1,6 +1,6 @@
 import { Avatar, Button, Checkbox, Link, FormControlLabel, Grid, TextField, Typography, CssBaseline, Container, CircularProgress, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +15,23 @@ const Register = () => {
     // Error/message returned by the API.
     const [error, setError] = useState('');
 
-    const handleRegistrationAttempt = () => {
+    const handleRegistrationAttempt = (event) => {
+        setPending(true);
+        
+        fetch('/register/', {
+            method: 'POST',
+            body: new FormData(event.currentTarget)
+        })
+        .then(res => {
+            if (res.status === 200) {
+                setUser(res.user);
+                setLoggedIn(true);
+            } else {
+                setError(res.error);
+            }
 
+            setPending(false);
+        })
     };
 
     return (
@@ -40,6 +55,7 @@ const Register = () => {
                 </Typography>
 
                 <Box component="form" onSubmit={ handleRegistrationAttempt } noValidate sx={{ mt: 1 }}>
+                    { loggedIn && <Alert severity="success">{ t('LOGIN_SUCCEEDED') }</Alert> }
                     { error !== '' && <Alert severity="error">{ `${ t('ERROR') }: ${ t(error["frontend"], { ns:"errors" }) }` }</Alert> }
                     
                     <TextField
