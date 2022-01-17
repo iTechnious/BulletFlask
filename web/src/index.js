@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "./index.css";
+import "./css/Forum.css";
 import { UserProvider } from './context/UserContext';
 import Router from './Router';
 import { Suspense } from 'react';

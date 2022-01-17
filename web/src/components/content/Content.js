@@ -33,7 +33,7 @@ const Content = ({ data, renew }) => {
 
     return (
         <>
-            <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography>
+            {/*<Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography> */}
 
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             {
@@ -43,7 +43,7 @@ const Content = ({ data, renew }) => {
             }
             </Grid>
 
-            <Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("THREADS")}</Typography>
+            {/*<Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("THREADS")}</Typography> */}
 
             {
                 // Render all threads.
