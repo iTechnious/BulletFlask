@@ -1,11 +1,12 @@
-import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import UserProfile from './UserProfile';
+import CustomCircularProgress from "../Progress"
 
-const Navbar = () => {
+
+const Navbar = ( {IsLoading} ) => {
     return (
         <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
@@ -23,6 +24,8 @@ const Navbar = () => {
                     {/* TODO: Replace with forum name of this instance. */}
                     BulletFlask
                 </Typography>
+
+                {IsLoading ? <CustomCircularProgress/> : null}
 
                 {/* TODO: Check if user is already signed in. */}
                 <UserProfile />

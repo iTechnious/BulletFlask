@@ -13,8 +13,12 @@ const Forum = () => {
     const [content, setContent] = useState(null);
     // Breadcrumb data.
     const [breadcrumb, setBreadcrumb] = useState([]);
+    // Loading state.
+    const [loading, setLoading] = useState(true);
+
 
     const getData = (location) => {
+        setLoading(true);
         location = location.toString();
         
         fetch('/api/content/get/?location=' + location, {
@@ -24,6 +28,7 @@ const Forum = () => {
         .then(data => {
             setCurrent(data['current']);
             setContent(data['contents']);
+            setLoading(false);
         })
         .catch(console.log);
 
@@ -41,11 +46,11 @@ const Forum = () => {
     // eslint-disable-next-line
     }, []);
 
-    if (current === null || content === null) return null;
+    if (current === null || content === null) return <Navbar IsLoading={true} />;
 
     return (
         <>
-            <Navbar />
+            <Navbar IsLoading={loading} />
             <Breadcrumb data={ breadcrumb } renew={ getData } />
             <Container>
                 <Current data={ current } />
