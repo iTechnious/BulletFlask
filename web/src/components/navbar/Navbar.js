@@ -4,6 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import UserProfile from './UserProfile';
 import CustomCircularProgress from "../Progress"
+import {Fade} from "@mui/material";
 
 
 const Navbar = ( {IsLoading} ) => {
@@ -25,7 +26,11 @@ const Navbar = ( {IsLoading} ) => {
                     BulletFlask
                 </Typography>
 
-                {IsLoading ? <CustomCircularProgress/> : null}
+                <Fade in={IsLoading}>
+                    <div>
+                        <CustomCircularProgress/>
+                    </div>
+                </Fade>
 
                 {/* TODO: Check if user is already signed in. */}
                 <UserProfile />

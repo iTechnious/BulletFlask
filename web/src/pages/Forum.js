@@ -15,9 +15,14 @@ const Forum = () => {
     const [breadcrumb, setBreadcrumb] = useState([]);
     // Loading state.
     const [loading, setLoading] = useState(true);
+    // For loader delay
+    const timerRef = React.useRef();
 
 
     const getData = (location) => {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
         setLoading(true);
         location = location.toString();
         
@@ -28,7 +33,9 @@ const Forum = () => {
         .then(data => {
             setCurrent(data['current']);
             setContent(data['contents']);
-            setLoading(false);
+            timerRef.current = window.setTimeout(() => {
+              setLoading(false);
+            }, 200);
         })
         .catch(console.log);
 
@@ -46,15 +53,13 @@ const Forum = () => {
     // eslint-disable-next-line
     }, []);
 
-    if (current === null || content === null) return <Navbar IsLoading={true} />;
-
     return (
         <>
             <Navbar IsLoading={loading} />
-            <Breadcrumb data={ breadcrumb } renew={ getData } />
+            {breadcrumb !== null ? <Breadcrumb data={breadcrumb} renew={getData}/> : null}
             <Container>
-                <Current data={ current } />
-                <Content data={ content } renew={ getData } />
+                {current !== null ? <Current data={current}/> : null}
+                {content !== null ? <Content data={content} renew={getData}/> : null}
             </Container>
         </>
     );
