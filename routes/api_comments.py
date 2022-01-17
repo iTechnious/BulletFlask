@@ -6,10 +6,10 @@ from crossdomain import crossdomain
 from globals import app
 from helpers import db
 
-api_moderate = Blueprint("api_comment", __name__)
+api_comment = Blueprint("api_comment", __name__)
 
 @crossdomain(origin="*", current_app=app)
-@api_moderate.route("/api/content/comment/")
+@api_comment.route("/api/content/comment/")
 @login_required
 def comment():
     content_id = request.args["id"]
@@ -25,5 +25,7 @@ def comment():
         session.add(db.Content(location=content_id, type="comment", permissions=permissions, content=content))
         session.commit()
         session.close()
+
+        return {"success": True, "message": "success"}
     else:
         return {"error": {"message": "missing permissions"}}, 403

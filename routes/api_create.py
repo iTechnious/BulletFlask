@@ -29,6 +29,6 @@ def create_content():
         session.commit()
         session.close()
 
-        return {"message": "success"}, 201
+        return {"success": True, "message": "success"}, 201
     else:
         return permission, 500

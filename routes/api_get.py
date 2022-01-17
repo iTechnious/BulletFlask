@@ -76,6 +76,8 @@ def breadcrumb():
 
     data.reverse()
 
+    session.close()
+
     return jsonify(data)
 
 @crossdomain(origin="*", current_app=app)
@@ -91,5 +93,7 @@ def versions():
 
     res = session.query(db.Versions).filter_by(content_id=location).order_by(db.Versions.id)
     res = reversed(res)
+
+    session.close()
 
     return jsonify(res)

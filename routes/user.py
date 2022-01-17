@@ -78,7 +78,7 @@ def login():
                 db.session.add(user)
                 db.session.commit()
 
-                return {"message": "success", "user": {"username": user.username}}, 200
+                return {"success": True, "message": "success", "user": {"username": user.username}}, 200
             else:
                 return {"error": {"message": "wrong password", "frontend": "WRONG_PASSWORD"}}, 401
 
@@ -97,7 +97,7 @@ def logout():
     db.session.add(user)
     db.session.commit()
     logout_user()
-    return {"message": "success"}, 200
+    return {"success": True, "message": "success"}, 200
 
 
 @user_management.route("/register/", methods=["GET", "POST"])
@@ -121,6 +121,6 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        return {"message": "success", "user": {"username": user.username}}, 200
+        return {"success": True, "message": "success", "user": {"username": user.username}}, 200
 
     return {"error": {"message": "no form recieved"}}, 400

@@ -17,7 +17,7 @@ uri = f"mysql:///?User={config.DB.user}&;"
 uri = f"{config.DB.type}+{config.DB.driver}://{config.DB.user}:{config.DB.password}@" \
                                  f"{config.DB.host}:{config.DB.port}/{config.DB.db}"
 
-engine = sqlalchemy.create_engine(uri)
+engine = sqlalchemy.create_engine(uri, pool_size=5, max_overflow=-1, pool_timeout=10)
 factory = sessionmaker(bind=engine)
 
 Base = sqlalchemy.ext.declarative.declarative_base()

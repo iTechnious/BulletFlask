@@ -29,7 +29,7 @@ def delete_content():
         session.commit()
         session.close()
 
-        return {"message": "success", "redirect": parent_id}, 200
+        return {"success": True, "message": "success", "redirect": parent_id}, 200
 
     else:
         return {"error": {"message": "missing permissions"}}, 403
@@ -47,7 +47,7 @@ def cut_content():
     if helpers.permissions.permission_check(current_user, content_id, "moderate", "move"):
         cut_objects[current_user.email] = content_id
 
-        return {"message": "success", "redirect": content_id}, 200
+        return {"success": True, "message": "success", "redirect": content_id}, 200
 
     else:
         return {"error": {"message": "missing permissions"}}, 403
@@ -78,7 +78,7 @@ def paste_content():
 
         del cut_objects[current_user.email]
 
-        return {"message": "success", "redirect": content_id}, 200
+        return {"success": True, "message": "success", "redirect": content_id}, 200
     else:
         return {"error": {"message": "missing permissions"}}, 403
 
@@ -118,4 +118,4 @@ def edit():
     session.commit()
     session.close()
 
-    return {"message": "success", "redirect": content_id}, 200
+    return {"success": True, "message": "success", "redirect": content_id}, 200
