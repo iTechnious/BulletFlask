@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Container } from '@mui/material';
+import { Container, Fade } from '@mui/material';
 import Current from '../components/content/Current';
 import Content from '../components/content/Content';
 import '../css/Forum.css';
 import Navbar from '../components/navbar/Navbar';
 import Breadcrumb from "../components/breadcrumb/Breadcrumb";
+import Error from "../components/Error";
 
 const Forum = () => {
     // Info about the current element.
@@ -15,8 +16,9 @@ const Forum = () => {
     const [breadcrumb, setBreadcrumb] = useState([]);
     // Loading state.
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState({});
     // For loader delay
-    const timerRef = React.useRef();
+    const timerRef = React.useRef(0);
 
 
     const getData = (location) => {
@@ -37,7 +39,9 @@ const Forum = () => {
               setLoading(false);
             }, 200);
         })
-        .catch(console.log);
+        .catch(e => {
+            setLoadError({"message": e.message, "severity": "error"});
+        });
 
         fetch('/api/content/breadcrumb/?location=' + location, {
             credentials: 'include'
@@ -46,6 +50,9 @@ const Forum = () => {
         .then(data => {
             setBreadcrumb(data)
         })
+        .catch(e => {
+            setLoadError({"message": e.message, "severity": "error"});
+        });
     }
 
     useEffect(() => {
@@ -56,11 +63,17 @@ const Forum = () => {
     return (
         <>
             <Navbar IsLoading={loading} />
+            <Error message={loadError["message"]} setMessage={setLoadError} severity={loadError["severity"]} />
+
             {breadcrumb !== null ? <Breadcrumb data={breadcrumb} renew={getData}/> : null}
-            <Container>
-                {current !== null ? <Current data={current}/> : null}
-                {content !== null ? <Content data={content} renew={getData}/> : null}
-            </Container>
+
+            <Fade id={"forum-root"} in={!loading} timeout={{enter: 200, exit: 70}} appear>
+                <Container style={ {padding: 0} }>
+                    {current !== null ? <Current data={current}/> : null}
+                    {content !== null ? <Content data={content} renew={getData}/> : null}
+                </Container>
+            </Fade>
+
         </>
     );
 }

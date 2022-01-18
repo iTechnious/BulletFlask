@@ -1,6 +1,6 @@
 import { Avatar, Button, Link, Grid, TextField, Typography, CssBaseline, Container, CircularProgress, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box } from '@mui/system';
 import { UserContext } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';

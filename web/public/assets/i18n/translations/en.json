@@ -12,5 +12,6 @@
   "ERROR": "Error",
   "SIGN_UP": "Sign up",
   "USERNAME": "Username",
-  "LOGIN_SUCCEEDED": "Login succeeded!"
+  "LOGIN_SUCCEEDED": "Login succeeded!",
+  "DARKMODE": "Darkmode"
 }

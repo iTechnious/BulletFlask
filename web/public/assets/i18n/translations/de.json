@@ -12,5 +12,6 @@
   "ERROR": "Fehler",
   "SIGN_UP": "Registrieren",
   "USERNAME": "Nutzername",
-  "LOGIN_SUCCEEDED": "Login erfolgreich!"
+  "LOGIN_SUCCEEDED": "Login erfolgreich!",
+  "DARKMODE": "Darkmode"
 }

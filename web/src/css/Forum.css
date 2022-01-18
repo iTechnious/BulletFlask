@@ -1,10 +1,20 @@
-main {
-    overflow: hidden;
-    height: fit-content;
-    width: 95vw;
-    max-width: 1000px;
-    top: auto;
+#forum-content,
+#forum-current {
     margin: auto auto;
+    height: fit-content;
+    width: 90vw;
+    max-width: 1000px;
+    padding-bottom: 10px;
+}
+#forum-current {
+    padding-bottom: 10px;
+
+    word-wrap: break-word;
+}
+
+.category,
+.thread {
+    word-wrap: break-word;
 }
 
 code {
@@ -33,7 +43,7 @@ pre code {
 
 pre code::-webkit-scrollbar {
     -webkit-appearance: none;
-    background-clip: padding-box;
+    background-clip: border-box;
 }
 pre code::-webkit-scrollbar:vertical {
     width: 11px;

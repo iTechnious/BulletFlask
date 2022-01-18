@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Thread from '../thread/Thread';
 import Category from '../category/Category';
-import { Grid, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { Grid } from '@mui/material';
 
 const Content = ({ data, renew }) => {
-    const { t } = useTranslation();
-
     const [threads, setThreads] = useState([]);
     const [categories, setCategories] = useState([]);
 
@@ -32,7 +29,7 @@ const Content = ({ data, renew }) => {
     }, [data])
 
     return (
-        <>
+        <div id={"forum-content"}>
             {/*<Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography> */}
 
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -49,7 +46,7 @@ const Content = ({ data, renew }) => {
                 // Render all threads.
                 threads.map((element, index) => { return(<Thread key={ index } data={ element } renew={ renew }/>) })
             }
-        </>
+        </div>
     );
 }
 
