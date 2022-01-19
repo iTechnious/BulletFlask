@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Container, Fade } from '@mui/material';
 import Current from '../components/content/Current';
 import Content from '../components/content/Content';
@@ -6,12 +6,16 @@ import '../css/Forum.css';
 import Navbar from '../components/navbar/Navbar';
 import Breadcrumb from "../components/breadcrumb/Breadcrumb";
 import Error from "../components/Error";
+import {UserContext} from "../index";
+import Login from "./Login";
+import { useParams } from "react-router-dom";
 
 const Forum = () => {
+    const { preDefLocation } = useParams();
     // Info about the current element.
-    const [current, setCurrent] = useState(null);
+    const [current, setCurrent] = useState(undefined);
     // Content of the current element.
-    const [content, setContent] = useState(null);
+    const [content, setContent] = useState(undefined);
     // Breadcrumb data.
     const [breadcrumb, setBreadcrumb] = useState([]);
     // Loading state.
@@ -19,6 +23,8 @@ const Forum = () => {
     const [loadError, setLoadError] = useState({});
     // For loader delay
     const timerRef = React.useRef(0);
+
+    const {loggedIn, pending} = useContext(UserContext);
 
 
     const getData = (location) => {
@@ -56,10 +62,20 @@ const Forum = () => {
     }
 
     useEffect(() => {
-        getData(0);
+        if (loggedIn) {
+            if (preDefLocation !== undefined) {getData(preDefLocation)} else {
+                getData(window.location.href.substring(window.location.href.lastIndexOf('/') + 1))
+            }
+        } else {
+            timerRef.current = window.setTimeout(() => {
+              setLoading(false);
+            }, 200);
+        }
     // eslint-disable-next-line
-    }, []);
+    }, [loggedIn, preDefLocation]);
 
+    if (pending) { return null; }
+    if (!loggedIn) { return <Login /> }
     return (
         <>
             <Navbar IsLoading={loading} />
@@ -69,8 +85,8 @@ const Forum = () => {
 
             <Fade id={"forum-root"} in={!loading} timeout={{enter: 200, exit: 70}} appear>
                 <Container style={ {padding: 0} }>
-                    {current !== null ? <Current data={current}/> : null}
-                    {content !== null ? <Content data={content} renew={getData}/> : null}
+                    {current !== undefined ? <Current data={current}/> : null}
+                    {content !== undefined ? <Content data={content} renew={getData}/> : null}
                 </Container>
             </Fade>
 

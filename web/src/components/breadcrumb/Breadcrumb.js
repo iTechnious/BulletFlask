@@ -1,6 +1,7 @@
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import React from "react";
+import {NavLink} from "react-router-dom";
 
 const Breadcrumb = ( {data, renew} ) => {
     return (
@@ -9,9 +10,12 @@ const Breadcrumb = ( {data, renew} ) => {
                 {
                     data.map((ele, i)=>{
                         return(
-                            <Link key={i} underline="hover" style={ {cursor: "pointer"} } onClick={ ()=>{ renew(ele.id) } }>
-                                { ele.name }
-                            </Link>
+                            <NavLink key={i}
+                                     to={`/forum/${ele !== undefined ? ele.id : "0"}`}
+                                     style={{textDecoration: "none"}}
+                                     underline="hover">
+                                <Link>{ ele.name }</Link>
+                            </NavLink>
                         )
                     })
                 }

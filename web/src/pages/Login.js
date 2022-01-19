@@ -2,7 +2,7 @@ import { Avatar, Button, Link, Grid, TextField, Typography, CssBaseline, Contain
 import { Lock as LockIcon } from '@mui/icons-material';
 import React, { useContext, useState } from 'react';
 import { Box } from '@mui/system';
-import { UserContext } from '../context/UserContext';
+import { UserContext } from '../index';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 

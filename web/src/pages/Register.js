@@ -1,8 +1,8 @@
 import { Avatar, Button, Checkbox, Link, FormControlLabel, Grid, TextField, Typography, CssBaseline, Container, CircularProgress, Alert } from '@mui/material';
 import { Lock as LockIcon } from '@mui/icons-material';
-import React, { useContext, useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { Box } from '@mui/system';
-import { UserContext } from '../context/UserContext';
+import { UserContext } from '../index';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from "react-router-dom";
 
@@ -33,6 +33,11 @@ const Register = () => {
             setPending(false);
         })
     };
+
+    if (loggedIn) {
+        // TODO: Readirect using react-router!!!
+        window.location.replace('/forum');
+    }
 
     return (
         <>
@@ -88,11 +93,6 @@ const Register = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                    />
-
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
                     />
 
                     <Button
