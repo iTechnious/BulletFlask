@@ -3,7 +3,7 @@ from flask_scss import Scss
 from globals import app
 from helpers import init
 from routes import user
-from routes.api_comments import api_comment
+from routes.api_interact import api_interact
 from routes.api_create import api_create
 from routes.api_get import api_get
 from routes.api_moderate import api_moderate
@@ -19,7 +19,7 @@ app.register_blueprint(api_get)
 app.register_blueprint(api_create)
 app.register_blueprint(api_permissions)
 app.register_blueprint(api_moderate)
-app.register_blueprint(api_comment)
+app.register_blueprint(api_interact)
 
 @app.after_request
 def add_header(r):

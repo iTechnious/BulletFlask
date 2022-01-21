@@ -6,10 +6,10 @@ from crossdomain import crossdomain
 from globals import app
 from helpers import db
 
-api_comment = Blueprint("api_comment", __name__)
+api_interact = Blueprint("api_interact", __name__)
 
 @crossdomain(origin="*", current_app=app)
-@api_comment.route("/api/content/comment/")
+@api_interact.route("/api/interact/comment/")
 @login_required
 def comment():
     content_id = request.args["id"]
