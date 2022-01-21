@@ -7,7 +7,7 @@ const Category = ({ data }) => {
     const { t } = useTranslation();
 
     return (
-        <Grid item xs={6}>
+        <Grid item xs={2} sm={4} md={4}>
             <NavLink to={"/forum/"+data.id} style={{textDecoration: "none"}}>
                 <Card className="category" sx={{ padding: '10px', marginBottom: '20px' }} style={ {cursor: "pointer"} }>
                     <CardContent>

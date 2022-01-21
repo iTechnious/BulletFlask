@@ -6,7 +6,7 @@ import Router from './Router';
 import { Suspense } from 'react';
 import './i18n';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
+import {Backdrop, CircularProgress, CssBaseline} from "@mui/material";
 
 export const ColorModeContext = React.createContext("dark");
 export const UserContext = React.createContext();
@@ -75,7 +75,7 @@ const App = () => {
 
 ReactDOM.render(
   <React.StrictMode>
-      <Suspense fallback={<span>Loading...</span>}>
+      <Suspense fallback={<Backdrop open={true} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}><CircularProgress color="inherit" /></Backdrop>}>
           <App />
       </Suspense>
   </React.StrictMode>,

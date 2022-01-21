@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Container, Fade } from '@mui/material';
+import {Container, Fade} from '@mui/material';
 import Current from '../components/content/Current';
 import Content from '../components/content/Content';
 import '../css/Forum.css';
@@ -9,6 +9,7 @@ import Error from "../components/Error";
 import {UserContext} from "../index";
 import Login from "./Login";
 import { useParams } from "react-router-dom";
+import Box from "@mui/material/Box";
 
 const Forum = () => {
     const { preDefLocation } = useParams();
@@ -62,6 +63,10 @@ const Forum = () => {
     }
 
     useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
         if (loggedIn) {
             if (preDefLocation !== undefined) {getData(preDefLocation)} else {
                 getData(window.location.href.substring(window.location.href.lastIndexOf('/') + 1))
@@ -78,10 +83,12 @@ const Forum = () => {
     if (!loggedIn) { return <Login /> }
     return (
         <>
-            <Navbar IsLoading={loading} />
-            <Error message={loadError["message"]} setMessage={setLoadError} severity={loadError["severity"]} />
+            <Box style={{position: "sticky", top: 0}}>
+                <Navbar IsLoading={loading} />
+                {breadcrumb !== null ? <Breadcrumb data={breadcrumb} renew={getData}/> : null}
+            </Box>
 
-            {breadcrumb !== null ? <Breadcrumb data={breadcrumb} renew={getData}/> : null}
+            <Error message={loadError["message"]} setMessage={setLoadError} severity={loadError["severity"]} />
 
             <Fade id={"forum-root"} in={!loading} timeout={{enter: 200, exit: 70}} appear>
                 <Container style={ {padding: 0} }>

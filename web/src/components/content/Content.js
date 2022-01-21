@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Thread from '../thread/Thread';
 import Category from '../category/Category';
-import { Grid } from '@mui/material';
+import {Divider, Grid} from '@mui/material';
+import {useTranslation} from "react-i18next";
 
 const Content = ({ data, renew }) => {
     const [threads, setThreads] = useState([]);
     const [categories, setCategories] = useState([]);
 
+    const [windowSize, setWindowSize] = useState(window.innerWidth);
+
+    const { t } = useTranslation();
+
     useEffect(() => {
+        window.addEventListener("resize", () => {setWindowSize(window.innerWidth)});
+
         let threadElements = [];
         let categoryElements = [];
 
@@ -30,9 +37,17 @@ const Content = ({ data, renew }) => {
 
     return (
         <div id={"forum-content"}>
-            {/*<Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("CATEGORIES")}</Typography> */}
-
-            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            <>
+            {
+                categories.length !== 0 ? <Divider style={{margin: "10px 0"}}>{t("CATEGORIES")}</Divider> : null
+            }
+            </>
+            <Grid container
+                  direction={windowSize < 550 ? "column" : "row"}
+                  rowSpacing={1}
+                  spacing={{ xs: 2, md: 3 }}
+                  columns={{ xs: 4, sm: 8, md: 12 }}
+                  justifyContent={"center"}>
             {
                 categories.map((element, index) => {
                     return(<Category key={ index } data={ element } renew={ renew }/>)
@@ -40,12 +55,21 @@ const Content = ({ data, renew }) => {
             }
             </Grid>
 
-            {/*<Typography variant="h5" sx={{ margin: '30px 0 30px 0' }}>{t("THREADS")}</Typography> */}
-
+            <>
             {
-                // Render all threads.
-                threads.map((element, index) => { return(<Thread key={ index } data={ element } renew={ renew }/>) })
+                threads.length !== 0 ? <Divider style={{margin: "10px 0"}}>{t("THREADS")}</Divider> : null
             }
+            </>
+            <Grid container
+                  direction={"column"}
+                  rowSpacing={1}
+                  justifyContent={"center"}>
+                {
+                    // Render all threads.
+                    threads.map((element, index) => { return(<Thread key={ index } data={ element } renew={ renew }/>) })
+                }
+            </Grid>
+
         </div>
     );
 }
