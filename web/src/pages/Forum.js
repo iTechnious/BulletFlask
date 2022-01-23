@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Container, Fade} from '@mui/material';
-import Current from '../components/content/Current';
-import Content from '../components/content/Content';
+import Current from '../components/forum_content/Current';
+import Content from '../components/forum_content/Content';
 import '../css/Forum.css';
 import Navbar from '../components/navbar/Navbar';
 import Breadcrumb from "../components/breadcrumb/Breadcrumb";

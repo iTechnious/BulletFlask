@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from '@mui/material';
+import { Paper, CardContent, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {NavLink} from "react-router-dom";
@@ -9,7 +9,7 @@ const Category = ({ data }) => {
     return (
         <Grid item xs={2} sm={4} md={4}>
             <NavLink to={"/forum/"+data.id} style={{textDecoration: "none"}}>
-                <Card className="category" sx={{ padding: '10px', marginBottom: '20px' }} style={ {cursor: "pointer"} }>
+                <Paper elevation={5} className="category" sx={{ padding: '10px' }} style={ {cursor: "pointer"} }>
                     <CardContent>
                         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                             { t('CATEGORY') }
@@ -17,7 +17,7 @@ const Category = ({ data }) => {
 
                         <Typography variant="h5">{ data.name }</Typography>
                     </CardContent>
-                </Card>
+                </Paper>
             </NavLink>
         </Grid>
     );

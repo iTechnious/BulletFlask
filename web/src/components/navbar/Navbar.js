@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import UserProfile from './UserProfile';
-import CustomCircularProgress from "../Progress"
+import CustomCircularProgress from "./Progress"
 import {Fade, FormControlLabel, Switch} from "@mui/material";
 import {useContext} from "react";
 import {ColorModeContext} from "../../index";
@@ -15,8 +15,8 @@ const Navbar = ( {IsLoading} ) => {
     const { t } = useTranslation();
 
     return (
-        <Box sx={{ flexGrow: 1 }} zIndex={1000}>
-        <AppBar position="static">
+        <Box sx={{ flexGrow: 1 }}>
+        <AppBar id={"navbar"} position="static">
             <Toolbar>
                 {/* <IconButton
                     size="large"
