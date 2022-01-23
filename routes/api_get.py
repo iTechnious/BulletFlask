@@ -24,16 +24,19 @@ def get_content():
     if not helpers.permissions.permission_check(current_user, location, "view", "all"):
         return {"error": {"message": "missing permissions"}}, 403
 
-    content = session.query(db.Content).filter_by(location=location).all()
+    content = [{c.name: getattr(x, c.name) for c in x.__table__.columns} for x in session.query(db.Content).filter_by(location=location).all()]
     _current = session.query(db.Content).filter_by(id=location).first()
+    current = {c.name: getattr(_current, c.name) for c in _current.__table__.columns}
 
-    current = _current
+    for i in range(0, len(content)):
+        if content[i]["type"] == "comment":
+            content[i]["subcomments"] = len(session.query(db.Content).filter_by(location=content[i]["id"], type="comment").all())
 
     if current is not None:
         try:
-            current.permissions = current.permissions[current_user.email]
+            current["permissions"] = current["permissions"][current_user.email]
         except KeyError:
-            current.permissions = {}
+            current["permissions"] = {}
 
     ################## DONE FETCHING DATA ##################
     if isinstance(content, tuple):  # content is empty
@@ -51,13 +54,17 @@ def get_content():
         current["name"] = version["name"]
         current["content"] = version["content"]
 
+    ################## SETTING SUBCOMMENT AMOUNT ##################
+    if current["type"] == "comment":
+        current["subcomments"] = len(session.query(db.Content).filter_by(location=current["id"], type="comment").all())
+
     session.close()
 
     ################## PARSE SQLA OBJECTS TO JSON ##################
     return jsonify(
         {
-            "current": {c.name: getattr(current, c.name) for c in current.__table__.columns},
-            "contents": [{c.name: getattr(x, c.name) for c in x.__table__.columns if c.name in ["id", "type", "name"]} for x in content]
+            "current": current,
+            "contents": [{k: v for k, v in item.items() if k not in ["permissions", "deny"]} for item in content]
          }
     )
 
