@@ -5,3 +5,4 @@ statics/config.py
 .vs/
 .idea/
 __pycache__/
+env/
