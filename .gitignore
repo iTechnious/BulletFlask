@@ -4,3 +4,4 @@ package-lock.json
 statics/config.py
 .vs/
 __pycache__/
+env/
