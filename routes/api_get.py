@@ -98,9 +98,9 @@ def versions():
 
     session = db.factory()
 
-    res = session.query(db.Versions).filter_by(content_id=location).order_by(db.Versions.id)
+    res = session.query(db.Versions).filter_by(content_id=location).order_by(db.Versions.id).all()
     res = reversed(res)
 
     session.close()
 
-    return jsonify(res)
+    return jsonify([{c.name: getattr(x, c.name) for c in x.__table__.columns} for x in res])
