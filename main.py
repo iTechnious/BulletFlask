@@ -10,7 +10,7 @@ from routes.api_moderate import api_moderate
 from routes.permissions import api_permissions
 from statics import config
 
-app.config["environment"] = "development"
+app.debug = True
 
 init.init_db()
 

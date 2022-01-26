@@ -47,12 +47,12 @@ def get_content():
 
     ################## UPDATING CONTENT IF VERSION ID IS SPECIFIED ##################
     if "version" in request.args.keys():
-        version = session.query(db.Versions).filter_by(id=request.args["verions"]).first()
+        version = session.query(db.Versions).filter_by(id=request.args["version"]).first()
 
-        if str(current["id"]) != str(version["content_id"]):
+        if str(current["id"]) != str(version.content_id):
             return {"error": {"message": "version id not found for this post!"}}, 409
-        current["name"] = version["name"]
-        current["content"] = version["content"]
+        current["name"] = version.name
+        current["content"] = version.content
 
     ################## SETTING SUBCOMMENT AMOUNT ##################
     if current["type"] == "comment":
