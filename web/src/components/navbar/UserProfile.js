@@ -1,5 +1,5 @@
 import { AccountCircle, Logout } from '@mui/icons-material';
-import { Button, Divider, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem, Typography } from '@mui/material';
+import { Button, Divider, IconButton, Link, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import { t } from 'i18next';
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../../index';

@@ -4,15 +4,18 @@ import Current from '../components/forum_content/Current';
 import Content from '../components/forum_content/Content';
 import '../css/Forum.css';
 import Navbar from '../components/navbar/Navbar';
-import Breadcrumb from "../components/breadcrumb/Breadcrumb";
-import Error from "../components/Error";
+import Breadcrumb from "../components/misc/Breadcrumb";
+import Error from "../components/navbar/Error";
 import {UserContext} from "../index";
 import Login from "./Login";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
+import ForumActionSD from "../components/misc/ForumActionsSD";
+
+export const LocationContext = React.createContext();
 
 const Forum = () => {
-    const { preDefLocation } = useParams();
+    const { preDefLocation, preDefVersion } = useParams();
     // Info about the current element.
     const [current, setCurrent] = useState(undefined);
     // Content of the current element.
@@ -35,7 +38,7 @@ const Forum = () => {
         setLoading(true);
         location = location.toString();
         
-        fetch('/api/content/get/?location=' + location, {
+        fetch('/api/content/get/?location=' + location + (preDefVersion !== undefined ? "&version="+preDefVersion : ""), {
             credentials: 'include'
         })
         .then(res => res.json())
@@ -44,7 +47,7 @@ const Forum = () => {
             setContent(data['contents']);
             timerRef.current = window.setTimeout(() => {
               setLoading(false);
-            }, 200);
+            }, 90);
         })
         .catch(e => {
             setLoadError({"message": e.message, "severity": "error"});
@@ -64,11 +67,10 @@ const Forum = () => {
 
     useEffect(() => {
         window.scrollTo({
-            top: 0,
-            behavior: "smooth"
+            top: 0
         });
         if (loggedIn) {
-            if (preDefLocation !== undefined) {getData(preDefLocation)} else {
+            if (preDefLocation !== undefined) {getData(preDefLocation, preDefVersion)} else {
                 getData(window.location.href.substring(window.location.href.lastIndexOf('/') + 1))
             }
         } else {
@@ -76,27 +78,29 @@ const Forum = () => {
               setLoading(false);
             }, 200);
         }
-    // eslint-disable-next-line
-    }, [loggedIn, preDefLocation]);
+    }, [loggedIn, preDefLocation, preDefVersion]);
 
     if (pending) { return null; }
     if (!loggedIn) { return <Login /> }
     return (
         <>
-            <Box style={{position: "sticky", top: 0}}>
-                <Navbar IsLoading={loading} />
-                {breadcrumb !== null ? <Breadcrumb data={breadcrumb} renew={getData}/> : null}
-            </Box>
+            <LocationContext.Provider value={{preDefLocation, preDefVersion}}>
+                <Box style={{position: "sticky", top: 0}}>
+                    <Navbar IsLoading={loading} />
+                    {breadcrumb !== null ? <Breadcrumb data={breadcrumb} renew={getData}/> : null}
+                </Box>
 
-            <Error message={loadError["message"]} setMessage={setLoadError} severity={loadError["severity"]} />
+                <Error message={loadError["message"]} setMessage={setLoadError} severity={loadError["severity"]} />
 
-            <Fade id={"forum-root"} in={!loading} timeout={{enter: 200, exit: 70}} appear>
-                <Container style={ {padding: 0} }>
-                    {current !== undefined ? <Current data={current}/> : null}
-                    {content !== undefined ? <Content data={content} renew={getData}/> : null}
-                </Container>
-            </Fade>
+                <ForumActionSD />
 
+                <Fade id={"forum-root"} in={!loading} timeout={{enter: 200, exit: 70}} appear>
+                    <Container style={ {padding: 0} }>
+                        {current !== undefined ? <Current data={current}/> : null}
+                        {content !== undefined ? <Content data={content} renew={getData}/> : null}
+                    </Container>
+                </Fade>
+            </LocationContext.Provider>
         </>
     );
 }

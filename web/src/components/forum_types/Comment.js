@@ -19,6 +19,7 @@ const Comment = ({ data }) => {
 
     const fetch_subcomments = (event, expanded) => {
         if (!expanded) {return}
+        if (subcomments.length !== 0) {return}
 
         fetch('/api/content/get/?location=' + data.id)
             .then(res => res.json())
@@ -28,20 +29,17 @@ const Comment = ({ data }) => {
     return (
         <Grid item>
             <Paper elevation={4} className="comment" sx={{ padding: '0px' }}>
-                <CardContent sx={{padding: '5px 20px !important'}}>
+                <CardContent sx={{padding: '5px 0 0 20px !important'}}>
                     <Typography variant="p" fontSize={"medium"}>{ data.content }</Typography>
 
                     <>
                     {
                         data["subcomments"] > 0 ?
                             <Accordion onChange={fetch_subcomments} disableGutters square>
-                            <AccordionSummary sx={{paddingLeft: "1px"}}
-                                expandIcon={<ExpandMoreIcon />}
-
-                            >
+                            <AccordionSummary sx={{paddingLeft: "1px"}} expandIcon={<ExpandMoreIcon />}>
                                 <Typography>{`${data["subcomments"]} ${t('COMMENTS')}`}</Typography>
                             </AccordionSummary>
-                            <AccordionDetails sx={{padding: "1px"}}>
+                            <AccordionDetails sx={{padding: "1px", marginRight: "0"}}>
                                 {
                                     subcomments.length === 0 ? <Box sx={{ width: '100%' }}><LinearProgress /></Box>
                                         : subcomments.map((element, key) => {return( <Comment key={key} data={element} /> )})

@@ -15,5 +15,14 @@
   "SIGN_UP": "Sign up",
   "USERNAME": "Username",
   "LOGIN_SUCCEEDED": "Login succeeded!",
-  "DARKMODE": "Darkmode"
+  "DARKMODE": "Darkmode",
+  "EDIT": "edit",
+  "DELETE": "delete",
+  "CUT": "cut",
+  "PASTE": "paste",
+  "OTHER_VERSIONS_AVAIL": "This element has {{amount}} older versions",
+  "VERSION_ID": "Version ID: {{id}}",
+  "CURRENT_VERSION": "Current version",
+  "CHOOSEN": "choosen",
+  "CHILDS_NOT_AFFECTED": "Child elements (e.g. comments) are not affected!"
 }

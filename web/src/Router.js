@@ -13,6 +13,11 @@ const Router = () => {
                     element=<Forum />
                 />
                 <Route
+                    path="/forum/:preDefLocation/:preDefVersion"
+                    exact
+                    element=<Forum />
+                />
+                <Route
                     path="/forum"
                     exact
                     element=<Navigate replace to="/forum/0" />

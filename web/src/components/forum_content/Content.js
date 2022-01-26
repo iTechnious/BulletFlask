@@ -43,7 +43,7 @@ const Content = ({ data, renew }) => {
     }, [data])
 
     return (
-        <div id={"forum-content"} style={{ "margin-bottom": "50px" }}>
+        <div id={"forum-content"} style={{ marginBottom: "50px" }}>
             {/* -------------- COMMENTS --------------*/}
             <>
             {

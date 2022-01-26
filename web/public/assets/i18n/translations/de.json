@@ -15,5 +15,14 @@
   "SIGN_UP": "Registrieren",
   "USERNAME": "Nutzername",
   "LOGIN_SUCCEEDED": "Login erfolgreich!",
-  "DARKMODE": "Darkmode"
+  "DARKMODE": "Darkmode",
+  "EDIT": "bearbeiten",
+  "DELETE": "löschen",
+  "CUT": "ausschneiden",
+  "PASTE": "einfügen",
+  "OTHER_VERSIONS_AVAIL": "Dieser Beitrag hat {{amount}} andere Versionen",
+  "VERSION_ID": "Versions ID: {{id}}",
+  "CURRENT_VERSION": "Aktuelle Version",
+  "CHOOSEN": "ausgewählt",
+  "CHILDS_NOT_AFFECTED": "Unterelemente wie Kommentare sind nicht betroffen!"
 }
