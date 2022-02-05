@@ -10,34 +10,34 @@ const Router = () => {
                 <Route
                     path="/forum/:preDefLocation"
                     exact
-                    element=<Forum />
+                    element={ <Forum /> }
                 />
                 <Route
                     path="/forum/:preDefLocation/:preDefVersion"
                     exact
-                    element=<Forum />
+                    element={ <Forum /> }
                 />
                 <Route
                     path="/forum"
                     exact
-                    element=<Navigate replace to="/forum/0" />
+                    element={ <Navigate replace to="/forum/0" /> }
                 />
                 <Route
                     path="/login"
                     exact
-                    element=<Login />
+                    element= { <Login /> }
                 />
                 
                 <Route
                     path="/register"
                     exact
-                    element=<Register />
+                    element={ <Register /> }
                 />
 
                 <Route
                     path="/"
                     exact
-                    element=<Navigate replace to="/forum/0" />
+                    element={ <Navigate replace to="/forum/0" /> }
                 />
             </Routes>
         </BrowserRouter>
