@@ -1,5 +1,3 @@
-from flask_scss import Scss
-
 from globals import app
 from helpers import init
 from routes import user
@@ -35,9 +33,6 @@ def add_header(r):
 
     r.headers["Access-Control-Allow-Origin"] = "*"
     return r
-
-
-Scss(app, static_dir="public/materialize", asset_dir="sass/materialize", load_paths=["sass/materialize/components", "sass/materialize/components/forms"])
 
 if __name__ == "__main__":
     app.run("0.0.0.0", config.port)
