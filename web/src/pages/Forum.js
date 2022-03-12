@@ -10,7 +10,7 @@ import {UserContext} from "../index";
 import Login from "./Login";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
-import ForumActionSD from "../components/misc/ForumActionsSD";
+import ForumActionSD from "../components/misc/quick_tooltip/ForumActionsSD";
 
 export const LocationContext = React.createContext();
 
