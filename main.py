@@ -1,3 +1,6 @@
+import flask
+from flask import render_template, request
+
 from globals import app
 from helpers import init
 from routes import user
@@ -18,6 +21,12 @@ app.register_blueprint(api_create)
 app.register_blueprint(api_permissions)
 app.register_blueprint(api_moderate)
 app.register_blueprint(api_interact)
+
+@app.errorhandler(404)
+def react(*args, **kwargs):
+    if request.path.startswith("/api/"):
+        return "Endpoint not found", 404
+    return app.send_static_file("index.html")
 
 @app.after_request
 def add_header(r):
